@@ -1,18 +1,17 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useTasksContext } from "../providers/TasksContext";
 
+export default function TasksTable() {
+  const { tasksList } = useTasksContext();
 
-
-function tasksTable() {
-  const { data, error, isLoading } = useQuery(['users'], fetchUsers);
-
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (!tasksList || tasksList.length === 0) {
+    return <p>No tasks available.</p>;
+  }
 
   return (
     <ul>
-      {data.map(user => (
-        <li key={user.id}>{user.name}</li>
+      {tasksList.map(task => (
+        <li key={task.id}>{task.name}</li>
       ))}
     </ul>
   );

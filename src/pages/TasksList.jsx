@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useTasksContext } from "../providers/TasksContext"
+import { getAllTasks } from "../api"
 import SingleTask from "../components/SingleTask"
 import AddTaskPopUp from "../components/AddTaskPopUp"
 import NavBar from "../components/NavBar"
@@ -9,16 +10,26 @@ import AddIcon from '@mui/icons-material/Add';
 
 export default function TasksList() {
 
-    const { tasksList } = useTasksContext();
+    const { setTasksList, tasksList } = useTasksContext();
     const [showPopup, setShowPopup] = useState(false);
     const [filteredTasks, setFilteredTasks] = useState(tasksList);
 
+    useEffect(() => {
+        const fetchTasks = async () => {
+            const tasks = await getAllTasks(); 
+            setTasksList(tasks); 
+            setFilteredTasks(tasks); 
+        };
+
+        fetchTasks();
+    }, []);
 
     const closePopup = () => {
         setShowPopup(false);
     };
 
-    const tasksToShow = filteredTasks && filteredTasks.length > 0 ? filteredTasks : tasksList;
+    
+    const tasksToShow =  filteredTasks.length > 0 ? filteredTasks : tasksList;
 
     return (
         <div>
@@ -30,7 +41,7 @@ export default function TasksList() {
                     <>
                         <p style={{ fontSize: "25px" }}>Tasks List:</p>
                         {tasksToShow.map((task) => (
-                            <SingleTask key={task.taskId} task={task} />
+                            <SingleTask key={task._id} task={task} />
                         ))}
                     </>
                 ) : (

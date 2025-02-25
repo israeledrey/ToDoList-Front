@@ -2,6 +2,7 @@ import * as React from "react";
 import { makeStyles } from '@mui/styles';
 import { useState } from 'react';
 import { useTasksContext } from "../providers/TasksContext"
+import { deleteTask, getAllTasks } from "../api"
 import AddTaskPopUp from "./AddTaskPopUp"
 import TaskDetailsPopUp from "./TaskDetailsPopUp"
 import Box from "@mui/material/Box";
@@ -57,8 +58,14 @@ export default function SingleTask({ task }) {
         setShowDetailsPopUp(!showDetailsPopUp);
     }
 
-    const handleDeleteTask = (taskId) => {
-        setTasksList((prevList) => prevList.filter((task) => task.taskId !== taskId));
+    const handleDeleteTask = async (taskId) => {
+        try {
+            await deleteTask(taskId);
+            const updatedTasks = await getAllTasks(); 
+            setTasksList(updatedTasks); 
+        } catch (error) {
+            console.error("Error deleting task", error);
+        }
     };
 
 
@@ -79,10 +86,10 @@ export default function SingleTask({ task }) {
                         </IconButton>
 
                         <IconButton edge="end" aria-label="delete" onClick={() =>
-                            handleDeleteTask(task.taskId)
+                            handleDeleteTask(task._id)
                         }>
                             <DeleteIcon />
-                        </IconButton>   
+                        </IconButton>
                     </Box>
                 }
                 disablePadding
@@ -104,7 +111,7 @@ export default function SingleTask({ task }) {
 
             {showDetailsPopUp && <TaskDetailsPopUp task={selectedTask} onClose={closePopup} />}
             {showPopup && <AddTaskPopUp showAddtPopUp={showPopup} task={selectedTask} onClose={closePopup} />}
-            
+
         </Box>
     );
 }

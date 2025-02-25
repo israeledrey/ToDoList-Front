@@ -2,8 +2,11 @@ import * as React from 'react';
 import { makeStyles } from '@mui/styles';
 import { useEffect } from 'react';
 import { useTasksContext } from "../providers/TasksContext"
+import { addNewTask, updateTask } from "../api"
+
 import TaskPrioritySlider from "./TaskPrioritySlider"
 import SelectDateForTask from "./SelcetDateForTask"
+
 import Card from '@mui/joy/Card';
 import CardActions from '@mui/joy/CardActions';
 import CardContent from '@mui/joy/CardContent';
@@ -48,7 +51,12 @@ const useStyles = makeStyles({
 
 export default function AddTaskPopUp({ showAddtPopUp, onClose, task }) {
   const classes = useStyles();
-  const { tasksList, setTasksList, formState, setFormState, resetFormState } = useTasksContext();
+  const { tasksList,
+    setTasksList,
+    formState,
+    setFormState,
+    resetFormState
+  } = useTasksContext();
 
   const isEditing = !!task;
 
@@ -64,18 +72,20 @@ export default function AddTaskPopUp({ showAddtPopUp, onClose, task }) {
     setFormState((prevValue) => ({ ...prevValue, [field]: value }));
   };
 
-  
-  const handleSaveTask = () => {
+
+  const handleSaveTask = async () => {
     if (isEditing) {
       // Edit task
+      const updatedTask = await updateTask(task.taskId, formState);
       setTasksList((prevList) =>
-        prevList.map((task) => (task.taskId === formState.taskId ? formState : task))
+        prevList.map((t) => (t.taskId === updatedTask.taskId ? updatedTask : t))
       );
-      console.log(formState);
+      console.log("Updating task with ID:", task.taskId);
     } else {
       // Add task
-      setTasksList([...tasksList, formState]); 
-      resetFormState(); 
+      const newTask = await addNewTask(formState.taskSobject);
+      setTasksList([...tasksList, newTask]);
+      resetFormState();
       console.log("Updated tasksList:", tasksList);
     }
 
@@ -97,7 +107,7 @@ export default function AddTaskPopUp({ showAddtPopUp, onClose, task }) {
           <FormControl sx={{ gridColumn: '1/-1' }}>
             <FormLabel>Task Subject</FormLabel>
             <Input
-              value={formState.taskSobject}
+              value={formState.taskSobject || ""}
               onChange={(e) => handleInputChange("taskSobject", e.target.value)}
             />
           </FormControl>
@@ -106,26 +116,26 @@ export default function AddTaskPopUp({ showAddtPopUp, onClose, task }) {
             <Input
               sx={{ height: '150px' }}
               endDecorator={<EditCalendarIcon />}
-              value={formState.taskContent}
+              value={formState.taskContent || ""}
               onChange={(e) => handleInputChange("taskContent", e.target.value)}
             />
           </FormControl>
           <FormControl>
             <FormLabel>Day to Complete</FormLabel>
             <SelectDateForTask
-              value={formState.dayToComplete}
+              value={formState.dayToComplete || ""}
               func={(newValue) => handleInputChange("dayToComplete", newValue)}
             />
           </FormControl>
           <TaskPrioritySlider
-            value={parseInt(formState.priority)}
+            value={parseInt(formState.priority || "")}
             getAriaValueText={(value) => `${value}%`}
             fun={(newValue) => handleInputChange("priority", `${newValue}%`)}
           />
           <Checkbox
             label="Completed"
             sx={{ gridColumn: '1/-1', my: 1 }}
-            checked={formState.completed}
+            checked={formState.completed || ""}
             onClick={() => handleInputChange("completed", !formState.completed)}
           />
           <CardActions sx={{ gridColumn: '1/-1' }}>
