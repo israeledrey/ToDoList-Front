@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { makeStyles } from '@mui/styles';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTasksContext } from "../providers/TasksContext"
 import { addNewTask, updateTask } from "../api"
 
@@ -49,7 +49,8 @@ const useStyles = makeStyles({
   }
 });
 
-export default function AddTaskPopUp({ showAddtPopUp, onClose, task }) {
+const AddTaskPopUp = ({ showAddtPopUp, onClose, task }) => {
+  
   const classes = useStyles();
   const { tasksList,
     setTasksList,
@@ -57,33 +58,31 @@ export default function AddTaskPopUp({ showAddtPopUp, onClose, task }) {
     setFormState,
     resetFormState
   } = useTasksContext();
+  
 
   const isEditing = !!task;
-
-
-
-  useEffect(() => {
-    if (task) {
-      setFormState(task);
-    }
-  }, [task]);
 
   const handleInputChange = (field, value) => {
     setFormState((prevValue) => ({ ...prevValue, [field]: value }));
   };
 
-
+  
   const handleSaveTask = async () => {
-    if (isEditing) {
+    if (isEditing && task) {
       // Edit task
-      const updatedTask = await updateTask(task.taskId, formState);
+      const updatedTask = await updateTask(task._id, formState);
+     
+      if (!updatedTask) {
+        console.error("Failed to update task");
+        return; 
+    }
       setTasksList((prevList) =>
-        prevList.map((t) => (t.taskId === updatedTask.taskId ? updatedTask : t))
+        prevList.map((t) => (t._id === updatedTask._id ? updatedTask : t))
       );
-      console.log("Updating task with ID:", task.taskId);
+      console.log("Updating task with ID:", task._id);
     } else {
       // Add task
-      const newTask = await addNewTask(formState.taskSobject);
+      const newTask = await addNewTask(formState);
       setTasksList([...tasksList, newTask]);
       resetFormState();
       console.log("Updated tasksList:", tasksList);
@@ -93,8 +92,15 @@ export default function AddTaskPopUp({ showAddtPopUp, onClose, task }) {
   };
 
 
-
-
+  useEffect(() => {
+    if (task) {
+      setFormState(task);
+    } else {
+      resetFormState();
+    }
+  }, [task]);
+  
+  
 
   return (
     <Backdrop open={showAddtPopUp} className={classes.backdrop} onClick={onClose}>
@@ -148,3 +154,5 @@ export default function AddTaskPopUp({ showAddtPopUp, onClose, task }) {
     </Backdrop>
   );
 }
+
+export default AddTaskPopUp

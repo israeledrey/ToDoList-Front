@@ -1,11 +1,11 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { getAllTasks } from '../api'
 
 export const TasksContext = createContext();
 
 export const TasksProvider = ({ children }) => {
     const [tasksList, setTasksList] = useState([]);
     const initialFormState = {
-        taskId: crypto.randomUUID(),
         taskSobject: "",
         taskContent: "",
         dayToComplete: "",
@@ -13,13 +13,36 @@ export const TasksProvider = ({ children }) => {
         completed: false
     };
     const [formState, setFormState] = useState(initialFormState);
+    const [filteredTasks, setFilteredTasks] = useState(tasksList);
+
+    useEffect(() => {
+        const fetchTasks = async () => {
+            try {
+                const tasks = await getAllTasks();
+                setTasksList(tasks);
+                setFilteredTasks(tasksList);
+            } catch (error) {
+                console.error("Error fetching tasks:", error);
+            }
+        };
+
+        fetchTasks();
+    }, [tasksList]);
 
     const resetFormState = () => {
-        setFormState({ ...initialFormState, taskId: crypto.randomUUID() }); 
+        setFormState({ ...initialFormState });
     };
 
     return (
-        <TasksContext.Provider value={{ tasksList, setTasksList, formState, setFormState, resetFormState }}>
+        <TasksContext.Provider value={{
+            tasksList,
+            setTasksList,
+            formState,
+            setFormState,
+            resetFormState,
+            filteredTasks,
+            setFilteredTasks
+        }}>
             {children}
         </TasksContext.Provider>
     );

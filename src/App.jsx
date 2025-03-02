@@ -2,7 +2,7 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { TasksProvider } from "./providers/TasksContext"
 import TasksList from './pages/TasksList'
-import Admin from './pages/Admin'
+import TasksTable from './pages/TasksTable'
 
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
         <TasksProvider>
           <Routes>
             <Route path="/" element={<TasksList />} />
-            <Route path="/Admin" element={<Admin />} />
+            <Route path="/Admin" element={<TasksTable />} />
           </Routes>
         </TasksProvider>
       </BrowserRouter>

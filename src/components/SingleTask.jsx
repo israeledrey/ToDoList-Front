@@ -58,9 +58,9 @@ export default function SingleTask({ task }) {
         setShowDetailsPopUp(!showDetailsPopUp);
     }
 
-    const handleDeleteTask = async (taskId) => {
+    const handleDeleteTask = async (_id) => {
         try {
-            await deleteTask(taskId);
+            await deleteTask(_id);
             const updatedTasks = await getAllTasks(); 
             setTasksList(updatedTasks); 
         } catch (error) {
@@ -85,9 +85,10 @@ export default function SingleTask({ task }) {
                             <CreateIcon />
                         </IconButton>
 
-                        <IconButton edge="end" aria-label="delete" onClick={() =>
+                        <IconButton edge="end" aria-label="delete" onClick={(event) => {
                             handleDeleteTask(task._id)
-                        }>
+                            event.stopPropagation();
+                        }}>
                             <DeleteIcon />
                         </IconButton>
                     </Box>
