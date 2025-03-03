@@ -55,13 +55,13 @@ export default function SearchTask({setFilteredTasks}) {
     };
 
     const handleSearchTask = (searchInput) => {
-        if (!searchInput || !tasksList) {
+        if (!searchInput) {
             setFilteredTasks(tasksList)
             return;
         }
 
         const filtered = tasksList.filter(task =>
-            task.taskSobject.toLowerCase().includes(searchInput.toLowerCase())
+            task.taskName.toLowerCase().includes(searchInput.toLowerCase())
         );
         setFilteredTasks(filtered);
     };

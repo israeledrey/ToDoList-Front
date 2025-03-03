@@ -6,8 +6,8 @@ export const TasksContext = createContext();
 export const TasksProvider = ({ children }) => {
     const [tasksList, setTasksList] = useState([]);
     const initialFormState = {
+        taskName: "",
         taskSobject: "",
-        taskContent: "",
         dayToComplete: "",
         priority: `${20}%`,
         completed: false

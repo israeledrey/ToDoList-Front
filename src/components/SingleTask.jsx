@@ -1,22 +1,18 @@
 import * as React from "react";
 import { makeStyles } from '@mui/styles';
 import { useState } from 'react';
-import { useTasksContext } from "../providers/TasksContext"
-import { deleteTask, getAllTasks } from "../api"
-import AddTaskPopUp from "./AddTaskPopUp"
+import TaskDealog from "./TaskDealog"
 import TaskDetailsPopUp from "./TaskDetailsPopUp"
 import Box from "@mui/material/Box";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Checkbox from "@mui/material/Checkbox";
 import Avatar from '@mui/material/Avatar';
-import IconButton from "@mui/material/IconButton";
-import CreateIcon from '@mui/icons-material/Create';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import { fontSize } from "@mui/system";
+import EditTask from "./taskAction/EditTask";
+import DeleteTask from "./taskAction/DeleteTask";
+
 
 
 
@@ -36,7 +32,6 @@ const useStyles = makeStyles({
 export default function SingleTask({ task }) {
 
     const classes = useStyles();
-    const { tasksList, setTasksList } = useTasksContext();
     const [showPopup, setShowPopup] = useState(false);
     const [showDetailsPopUp, setShowDetailsPopUp] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
@@ -48,25 +43,10 @@ export default function SingleTask({ task }) {
         setShowDetailsPopUp(false);
     };
 
-    const handleShowEditTask = (task) => {
-        setSelectedTask(task);
-        setShowPopup(true);
-    };
-
     const handleShowTaskDetails = (task) => {
         setSelectedTask(task);
         setShowDetailsPopUp(!showDetailsPopUp);
     }
-
-    const handleDeleteTask = async (_id) => {
-        try {
-            await deleteTask(_id);
-            const updatedTasks = await getAllTasks(); 
-            setTasksList(updatedTasks); 
-        } catch (error) {
-            console.error("Error deleting task", error);
-        }
-    };
 
 
     return (
@@ -78,19 +58,13 @@ export default function SingleTask({ task }) {
                 onClick={() => handleShowTaskDetails(task)}
                 secondaryAction={
                     <Box sx={{ display: "flex", gap: 1 }}>
-                        <IconButton edge="end" aria-label="edit" onClick={(event) => {
-                            handleShowEditTask(task)
-                            event.stopPropagation();
-                        }}>
-                            <CreateIcon />
-                        </IconButton>
 
-                        <IconButton edge="end" aria-label="delete" onClick={(event) => {
-                            handleDeleteTask(task._id)
-                            event.stopPropagation();
-                        }}>
-                            <DeleteIcon />
-                        </IconButton>
+                        <EditTask
+                            setSelectedTask={setSelectedTask}
+                            setShowPopup={setShowPopup}
+                            task={task} />
+                        <DeleteTask task={task} />
+
                     </Box>
                 }
                 disablePadding
@@ -103,7 +77,7 @@ export default function SingleTask({ task }) {
                     </ListItemIcon>
                     <ListItemText
                         id="single-task-label"
-                        primary={task.taskSobject}
+                        primary={task.taskName}
                         primaryTypographyProps={{ sx: { fontSize: '20px' } }}
                     />
                 </ListItemButton>
@@ -111,7 +85,7 @@ export default function SingleTask({ task }) {
 
 
             {showDetailsPopUp && <TaskDetailsPopUp task={selectedTask} onClose={closePopup} />}
-            {showPopup && <AddTaskPopUp showAddtPopUp={showPopup} task={selectedTask} onClose={closePopup} />}
+            {showPopup && <TaskDealog showAddtPopUp={showPopup} task={selectedTask} onClose={closePopup} />}
 
         </Box>
     );

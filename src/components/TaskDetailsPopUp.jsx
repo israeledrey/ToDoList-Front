@@ -23,7 +23,7 @@ export default function TaskDetailsPopUp({task}) {
             <FormatListBulletedIcon />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={task.taskContent} secondary="Task content" />
+        <ListItemText primary={task.taskSobject} secondary="Task subject" />
       </ListItem>
 
       <ListItem>
