@@ -1,10 +1,13 @@
 import React, { useMemo, useState } from 'react';
 import { useTasksContext } from "../providers/TasksContext";
-import { useReactTable, getCoreRowModel, getSortedRowModel, flexRender } from "@tanstack/react-table";
 
 import NavBar from '../components/NavBar';
+import TaskDealog from '../components/TaskDealog';
 import AddTask from '../components/taskAction/AddTask';
+import EditTask from '../components/taskAction/EditTask';
+
 import { makeStyles } from '@mui/styles';
+import { useReactTable, getCoreRowModel, getSortedRowModel, flexRender } from "@tanstack/react-table";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -20,7 +23,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const useStyles = makeStyles({
   headCell: {
-    backgroundColor: "#A0A0A0", 
+    backgroundColor: "#A0A0A0",
     color: "#fff",
     fontWeight: "bold",
     transition: "background-color 0.3s ease, transform 0.2s ease",
@@ -33,9 +36,10 @@ const useStyles = makeStyles({
   },
 });
 
-export default function TasksTable() {
+const TasksTable = () => {
   const classes = useStyles();
   const { tasksList, filteredTasks, setFilteredTasks } = useTasksContext();
+
 
   const data = useMemo(() => filteredTasks, [filteredTasks]);
   const columns = useMemo(() => [
@@ -44,9 +48,22 @@ export default function TasksTable() {
     { header: "Day To Complete", accessorKey: "dayToComplete" },
     { header: "Priority", accessorKey: "priority" },
     { header: "Completed", accessorKey: "completed" },
+    {
+      header: "Edit",
+      id: "edit",
+      cell: ({ row }) => (
+        <EditTask
+          task={row.original}
+          setSelectedTask={setSelectedTask}
+          setShowPopup={setShowPopup}
+        />
+      )
+    },
   ], []);
 
   const [sorting, setSortng] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   const table = useReactTable({
     data,
@@ -104,7 +121,11 @@ export default function TasksTable() {
         </Table>
       </TableContainer>
 
-      <AddTask />
+      <AddTask setShowPopup={setShowPopup} />
+
+      {showPopup && <TaskDealog showAddtPopUp={showPopup} task={selectedTask} onClose={() => setShowPopup(false)} />}
     </>
   );
 }
+
+export default TasksTable

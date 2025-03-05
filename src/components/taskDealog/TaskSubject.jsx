@@ -1,8 +1,11 @@
 import * as React from 'react';
+
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
-export default function TaskSubject({ value, onChange }) {
+
+
+ const TaskSubject = ({ value, onChange }) => {
   const options = [
     { label: 'Work', id: 1 },
     { label: 'leisure', id: 2 },
@@ -20,3 +23,5 @@ export default function TaskSubject({ value, onChange }) {
     />
   );
 }
+
+export default TaskSubject

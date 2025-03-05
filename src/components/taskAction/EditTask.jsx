@@ -1,11 +1,14 @@
-import React from 'react'
+import React from 'react';
+
 import IconButton from "@mui/material/IconButton";
 import CreateIcon from '@mui/icons-material/Create';
 
-const EditTask = ({ setSelectedTask, setShowPopup, task }) => {
 
+
+const EditTask = ({ setSelectedTask, setShowPopup, task }) => {
+    
     const handleShowEditTask = () => {
-        setSelectedTask(task);
+        setSelectedTask(task); 
         setShowPopup(true);
     };
 
@@ -15,13 +18,13 @@ const EditTask = ({ setSelectedTask, setShowPopup, task }) => {
                 edge="end"
                 aria-label="edit"
                 onClick={(event) => {
-                    handleShowEditTask(task)
+                    handleShowEditTask();
                     event.stopPropagation();
                 }}>
                 <CreateIcon />
             </IconButton>
         </>
-    )
+    );
 }
 
-export default EditTask
+export default EditTask;

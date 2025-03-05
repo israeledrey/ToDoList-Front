@@ -1,18 +1,11 @@
-import React from 'react'
-import { useState } from 'react';
-import TaskDealog from '../TaskDealog';
+import React from 'react';
 
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 
 
-const AddTask = () => {
 
-    const [showPopup, setShowPopup] = useState(false);
-
-    const closePopup = () => {
-        setShowPopup(false);
-    };
+const AddTask = ({ setShowPopup }) => {
 
 
     return (
@@ -25,9 +18,6 @@ const AddTask = () => {
             >
                 <AddIcon />
             </Fab>
-
-            {showPopup && <TaskDealog showAddtPopUp={showPopup} onClose={closePopup} />}
-
         </>
     )
 }

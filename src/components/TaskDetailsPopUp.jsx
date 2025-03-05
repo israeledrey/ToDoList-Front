@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -10,9 +11,9 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import LowPriorityIcon from '@mui/icons-material/LowPriority';
 
 
-export default function TaskDetailsPopUp({task}) {
+const TaskDetailsPopUp = ({ task }) => {
 
-   
+
   return (
 
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
@@ -50,9 +51,11 @@ export default function TaskDetailsPopUp({task}) {
             <LowPriorityIcon />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={task.priority} secondary= "Priority" />
+        <ListItemText primary={task.priority} secondary="Priority" />
       </ListItem>
 
     </List>
   );
 }
+
+export default TaskDetailsPopUp

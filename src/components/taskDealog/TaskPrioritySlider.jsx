@@ -1,6 +1,7 @@
 import * as React from 'react';
-import Slider from '@mui/material/Slider';
+
 import { styled } from '@mui/material/styles';
+import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
@@ -49,7 +50,7 @@ const PrettoSlider = styled(Slider)({
 
 
 
-export default function TaskPrioritySlider({fun}) {
+const TaskPrioritySlider = ({fun}) => {
 
     
     return (
@@ -65,3 +66,5 @@ export default function TaskPrioritySlider({fun}) {
         </Box>
     );
 }
+
+export default TaskPrioritySlider

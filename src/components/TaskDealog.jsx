@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useEffect } from 'react';
 import { useTasksContext } from "../providers/TasksContext"
-import { addNewTask, updateTask } from "../api"
+import { useTaskActions } from '../hooks/useTaskActions';
 
 import TaskPrioritySlider from "./taskDealog/TaskPrioritySlider"
 import SelectDateForTask from "./taskDealog/SelcetDateForTask"
@@ -20,6 +20,8 @@ import Typography from '@mui/joy/Typography';
 import Button from '@mui/joy/Button';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import Backdrop from '@mui/material/Backdrop';
+
+
 
 const useStyles = makeStyles({
   backdrop: {
@@ -49,16 +51,17 @@ const useStyles = makeStyles({
   }
 });
 
+
+
 const TaskDealog = ({ showAddtPopUp, onClose, task }) => {
 
   const classes = useStyles();
-  const { tasksList,
-    setTasksList,
+  const {
     formState,
     setFormState,
     resetFormState
   } = useTasksContext();
-
+  const { handleEditTask, handleAddTask } = useTaskActions();
 
   const isEditing = !!task;
 
@@ -69,24 +72,9 @@ const TaskDealog = ({ showAddtPopUp, onClose, task }) => {
 
   const handleSaveTask = async () => {
     if (isEditing && task) {
-
-      // Edit task
-      const updatedTask = await updateTask(task._id, formState);
-      if (!updatedTask) {
-        console.error("Failed to update task");
-        return;
-      }
-      setTasksList((prevList) =>
-        prevList.map((t) => (t._id === updatedTask._id ? updatedTask : t))
-      );
-      console.log("Updating task with ID:", task._id);
+      handleEditTask(task);
     } else {
-
-      // Add task
-      const newTask = await addNewTask(formState);
-      setTasksList([...tasksList, newTask]);
-      resetFormState();
-      console.log("Updated tasksList:", tasksList);
+      handleAddTask();
     }
 
     onClose();
@@ -135,7 +123,7 @@ const TaskDealog = ({ showAddtPopUp, onClose, task }) => {
               func={(newValue) => handleInputChange("dayToComplete", newValue)}
             />
           </FormControl>
-  
+
           <TaskPrioritySlider
             value={parseInt(formState.priority || "")}
             getAriaValueText={(value) => `${value}%`}
