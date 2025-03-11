@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTasksContext } from "../providers/TasksContext";
 
 import NavBar from '../components/NavBar';
@@ -81,7 +81,7 @@ const TasksTable = () => {
   }
 
   return (
-    <>
+    <>   
       <NavBar setFilteredTasks={setFilteredTasks} />
       <TableContainer component={Paper} className={classes.tableContainer} sx={{ mt: '90px' }}>
         <Table>

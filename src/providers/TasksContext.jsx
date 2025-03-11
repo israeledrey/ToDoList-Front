@@ -1,5 +1,5 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { getAllTasks } from '../api'
+import { createContext, useState, useContext, useEffect } from 'react';
+import { getAllTasks } from '../server/api'
 
 export const TasksContext = createContext();
 
@@ -10,7 +10,8 @@ export const TasksProvider = ({ children }) => {
         taskSobject: "",
         dayToComplete: "",
         priority: `${20}%`,
-        completed: false
+        completed: false,
+        location: []
     };
     const [formState, setFormState] = useState(initialFormState);
     const [filteredTasks, setFilteredTasks] = useState(tasksList);
@@ -25,9 +26,10 @@ export const TasksProvider = ({ children }) => {
                 console.error("Error fetching tasks:", error);
             }
         };
-
+        console.log("faching tasks");
+        
         fetchTasks();
-    }, [tasksList]);
+    }, []);
 
     const resetFormState = () => {
         setFormState({ ...initialFormState });

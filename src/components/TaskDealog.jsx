@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useEffect } from 'react';
 import { useTasksContext } from "../providers/TasksContext"
 import { useTaskActions } from '../hooks/useTaskActions';
@@ -20,6 +19,7 @@ import Typography from '@mui/joy/Typography';
 import Button from '@mui/joy/Button';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import Backdrop from '@mui/material/Backdrop';
+import DialogMap from './taskDealog/DialogMap';
 
 
 
@@ -135,6 +135,11 @@ const TaskDealog = ({ showAddtPopUp, onClose, task }) => {
             sx={{ gridColumn: '1/-1', my: 1 }}
             checked={formState.completed || ""}
             onClick={() => handleInputChange("completed", !formState.completed)}
+          />
+
+          <DialogMap 
+          // coordinate={formState.location}
+          // onLocationSelect={(coordinate) => handleInputChange("location", coordinate)}
           />
 
           <CardActions sx={{ gridColumn: '1/-1' }}>

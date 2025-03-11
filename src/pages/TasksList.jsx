@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useTasksContext } from "../providers/TasksContext"
 
 import SingleTask from "../components/SingleTask"

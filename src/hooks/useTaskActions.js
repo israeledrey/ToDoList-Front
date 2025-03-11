@@ -1,5 +1,5 @@
 import { useTasksContext } from '../providers/TasksContext';
-import { addNewTask, updateTask, deleteTask, getAllTasks } from '../api';
+import { addNewTask, updateTask, deleteTask, getAllTasks } from '../server/api';
 
 export const useTaskActions = () => {
     const { formState, setTasksList, resetFormState } = useTasksContext();
