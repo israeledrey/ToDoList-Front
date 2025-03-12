@@ -34,7 +34,7 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 1000,
+    zIndex: 1300,
   },
   card: {
     width: '50%',
@@ -84,6 +84,8 @@ const TaskDealog = ({ showAddtPopUp, onClose, task }) => {
   useEffect(() => {
     if (task) {
       setFormState(task);
+      console.log(task);
+      
     } else {
       resetFormState();
     }
@@ -137,10 +139,7 @@ const TaskDealog = ({ showAddtPopUp, onClose, task }) => {
             onClick={() => handleInputChange("completed", !formState.completed)}
           />
 
-          <DialogMap 
-          // coordinate={formState.location}
-          // onLocationSelect={(coordinate) => handleInputChange("location", coordinate)}
-          />
+          <DialogMap />
 
           <CardActions sx={{ gridColumn: '1/-1' }}>
             <Button variant="solid" color="primary" onClick={handleSaveTask}>

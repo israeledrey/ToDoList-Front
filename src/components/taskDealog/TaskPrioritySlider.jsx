@@ -52,6 +52,9 @@ const PrettoSlider = styled(Slider)({
 
 const TaskPrioritySlider = ({fun}) => {
 
+    const handlePriorityChange = (newValue) => {
+        fun(newValue);  
+    };
     
     return (
         <Box sx={{ width: 320 }}>
@@ -61,7 +64,7 @@ const TaskPrioritySlider = ({fun}) => {
                 valueLabelDisplay="auto"
                 aria-label="pretto slider"
                 defaultValue={20}
-                onChange={(event, newValue) => fun(newValue)}  
+                onChange={handlePriorityChange}  
             />
         </Box>
     );

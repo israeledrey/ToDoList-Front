@@ -13,9 +13,9 @@ function App() {
       <BrowserRouter>
         <TasksProvider>
           <Routes>
-            <Route path="/" element={<TasksList />} />
-            <Route path="/Admin" element={<TasksTable />} />
-            <Route path='/Map' element={<TasksMap />} />
+            <Route path="/tasks" element={<TasksList />} />
+            <Route path="/table" element={<TasksTable />} />
+            <Route path='/map' element={<TasksMap />} />
           </Routes>
         </TasksProvider>
       </BrowserRouter>

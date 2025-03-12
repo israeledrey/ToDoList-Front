@@ -6,8 +6,6 @@ import { Box } from '@mui/system';
 
 const DialogMap = () => {
 
-
-
     return (
         <Box>
             <Typography gutterBottom>Add location:</Typography>
@@ -16,7 +14,6 @@ const DialogMap = () => {
                 center={ [-118.2437, 34.0522]}
                 zoom={15}
                 mode="user"
-                // onLocationSelect={handleLocationSelect}
             />
         </Box>
 

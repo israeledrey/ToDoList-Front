@@ -54,11 +54,12 @@ const MapComponent = ({ style, center, zoom, iconUrl, mode }) => {
       map.on("click", function (event) {
         const coordinate = event.coordinate; 
         console.log("Clicked coordinate:", coordinate);
-  
+        vectorSource.clear();
+
         const iconFeature = new Feature({
           geometry: new Point(coordinate),
         });
-      
+       
         iconFeature.setStyle(
           new Style({
             image: new Icon({
@@ -74,40 +75,11 @@ const MapComponent = ({ style, center, zoom, iconUrl, mode }) => {
           ...prevValue,
           location: coordinate
         }));
-       
-        // onLocationSelect(coordinate);  
+         
         vectorSource.addFeature(iconFeature);  
       });
     }
-   
-
-    // if (mode === "admin") {
-      
-    //   console.log("tasksList:", tasksList);
-    //   tasksList.forEach((task) => {
-    //     if (task.location) { 
-    //       console.log("task.location");
-    //       const iconFeature = new Feature({
-    //         geometry: new Point(task.location),
-    //       });
-    
-    //       iconFeature.setStyle(
-    //         new Style({
-    //           image: new Icon({
-    //             anchor: [0.5, 1],
-    //             scale: 0.04,
-    //             src: iconUrl || "https://www.svgrepo.com/show/3322/duck.svg",
-    //           }),
-    //         })
-    //       );
-    
-    //       vectorSourceRef.current.addFeature(iconFeature); 
-    //     }
-    //   });
-    // }
     map.addInteraction(new Link());
-
-
 
     return () => {
       map.setTarget(null);

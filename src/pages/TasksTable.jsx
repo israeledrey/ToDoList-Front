@@ -5,6 +5,7 @@ import NavBar from '../components/NavBar';
 import TaskDealog from '../components/TaskDealog';
 import AddTask from '../components/taskAction/AddTask';
 import EditTask from '../components/taskAction/EditTask';
+import DeleteTask from '../components/taskAction/DeleteTask';
 
 import { makeStyles } from '@mui/styles';
 import { useReactTable, getCoreRowModel, getSortedRowModel, flexRender } from "@tanstack/react-table";
@@ -59,6 +60,15 @@ const TasksTable = () => {
         />
       )
     },
+    {
+      header: "Delete",
+      id: "delete",
+      cell: ({ row }) => (
+        <DeleteTask
+          task={row.original}
+        />
+      )
+    }
   ], []);
 
   const [sorting, setSortng] = useState([]);
@@ -81,7 +91,7 @@ const TasksTable = () => {
   }
 
   return (
-    <>   
+    <>
       <NavBar setFilteredTasks={setFilteredTasks} />
       <TableContainer component={Paper} className={classes.tableContainer} sx={{ mt: '90px' }}>
         <Table>
