@@ -1,25 +1,53 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
+import { getAllTasks } from '../server/api'
 
 export const TasksContext = createContext();
 
 export const TasksProvider = ({ children }) => {
     const [tasksList, setTasksList] = useState([]);
     const initialFormState = {
-        taskId: crypto.randomUUID(),
+        taskName: "",
         taskSobject: "",
-        taskContent: "",
         dayToComplete: "",
         priority: `${20}%`,
-        completed: false
+        completed: false,
+        location: []
     };
     const [formState, setFormState] = useState(initialFormState);
+    const [filteredTasks, setFilteredTasks] = useState(tasksList);
+    const [isEditing, setIsEditing] = useState(false);
+
+    useEffect(() => {
+        const fetchTasks = async () => {
+            try {
+                const tasks = await getAllTasks();
+                if (JSON.stringify(tasks) !== JSON.stringify(tasksList)) {
+                    setTasksList(tasks);
+                    setFilteredTasks(tasks); 
+                  }
+            } catch (error) {
+                console.error("Error fetching tasks:", error);
+            }
+        };
+        fetchTasks();
+    }, [tasksList]);
 
     const resetFormState = () => {
-        setFormState({ ...initialFormState, taskId: crypto.randomUUID() }); 
+        setFormState({ ...initialFormState });
     };
 
     return (
-        <TasksContext.Provider value={{ tasksList, setTasksList, formState, setFormState, resetFormState }}>
+        <TasksContext.Provider value={{
+            tasksList,
+            setTasksList,
+            formState,
+            setFormState,
+            resetFormState,
+            filteredTasks,
+            setFilteredTasks,
+            setIsEditing,
+            isEditing
+        }}>
             {children}
         </TasksContext.Provider>
     );

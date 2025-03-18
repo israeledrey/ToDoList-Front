@@ -14,11 +14,11 @@ export const getAllTasks = async () => {
 };
 
 // Add new task
-export const addNewTask = async (title) => {
+export const addNewTask = async (task) => {
+  console.log(task);
+  
   try {
-    const response = await axios.post(`${API_URL}/tasks/createTask`, { title });
-    console.log("Server Response:", response.data);
-    
+    const response = await axios.post(`${API_URL}/tasks/createTask`,  task ); 
     return response.data; 
   } catch (error) {
     console.error('Error adding todo', error);
@@ -26,20 +26,22 @@ export const addNewTask = async (title) => {
 };
 
 // Edit task
-export const updateTask = async (taskId, updates) => {
+export const updateTask = async (_id, updates) => {
   try {
-    const response = await axios.put(`${API_URL}/tasksList/${taskId}`, updates);
+    const response = await axios.put(`${API_URL}/tasksList/${_id}`, updates);
     return response.data; 
   } catch (error) {
+    
     console.error('Error updating todo', error);
   }
 };
 
 // Delete task
-export const deleteTask = async (taskId) => {
-    if (!taskId) throw new Error("Task ID is missing");
+export const deleteTask = async (_id) => {
+    if (!_id) throw new Error("Task ID is missing");
   try {
-    await axios.delete(`${API_URL}/tasksList/${taskId}`);
+    await axios.delete(`${API_URL}/tasksList/${_id}`);
+    
   } catch (error) {
     console.error('Error deleting todo', error);
   }

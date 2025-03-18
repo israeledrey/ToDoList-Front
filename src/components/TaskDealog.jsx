@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { makeStyles } from '@mui/styles';
 import { useEffect } from 'react';
 import { useTasksContext } from "../providers/TasksContext"
-import { addNewTask, updateTask } from "../api"
+import { useTaskActions } from '../hooks/useTaskActions';
 
-import TaskPrioritySlider from "./TaskPrioritySlider"
-import SelectDateForTask from "./SelcetDateForTask"
+import TaskPrioritySlider from "./taskDealog/TaskPrioritySlider"
+import SelectDateForTask from "./taskDealog/SelcetDateForTask"
+import TaskSubject from "./taskDealog/TaskSubject"
 
+import { makeStyles } from '@mui/styles';
 import Card from '@mui/joy/Card';
 import CardActions from '@mui/joy/CardActions';
 import CardContent from '@mui/joy/CardContent';
@@ -18,8 +18,10 @@ import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import Button from '@mui/joy/Button';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
-import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import Backdrop from '@mui/material/Backdrop';
+import DialogMap from './taskDealog/DialogMap';
+
+
 
 const useStyles = makeStyles({
   backdrop: {
@@ -32,11 +34,11 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 1000,
+    zIndex: 1300,
   },
   card: {
     width: '50%',
-    maxWidth: '600px',
+    maxWidth: '500px',
     backgroundColor: '#fff',
     padding: '20px',
     borderRadius: '10px',
@@ -49,24 +51,20 @@ const useStyles = makeStyles({
   }
 });
 
-export default function AddTaskPopUp({ showAddtPopUp, onClose, task }) {
+
+
+const TaskDealog = ({ showAddtPopUp, onClose, task }) => {
+
   const classes = useStyles();
-  const { tasksList,
-    setTasksList,
+  const {
     formState,
     setFormState,
-    resetFormState
+    resetFormState,
+    isEditing, 
+    setIsEditing
   } = useTasksContext();
-
-  const isEditing = !!task;
-
-
-
-  useEffect(() => {
-    if (task) {
-      setFormState(task);
-    }
-  }, [task]);
+  const { handleEditTask, handleAddTask } = useTaskActions();
+  
 
   const handleInputChange = (field, value) => {
     setFormState((prevValue) => ({ ...prevValue, [field]: value }));
@@ -75,24 +73,23 @@ export default function AddTaskPopUp({ showAddtPopUp, onClose, task }) {
 
   const handleSaveTask = async () => {
     if (isEditing) {
-      // Edit task
-      const updatedTask = await updateTask(task.taskId, formState);
-      setTasksList((prevList) =>
-        prevList.map((t) => (t.taskId === updatedTask.taskId ? updatedTask : t))
-      );
-      console.log("Updating task with ID:", task.taskId);
+      handleEditTask(task);
+      setIsEditing(false) 
     } else {
-      // Add task
-      const newTask = await addNewTask(formState.taskSobject);
-      setTasksList([...tasksList, newTask]);
-      resetFormState();
-      console.log("Updated tasksList:", tasksList);
+      handleAddTask();
     }
 
     onClose();
   };
 
 
+  useEffect(() => {
+    if (isEditing && task) {
+      setFormState(task); 
+    } else {
+      resetFormState();
+    }
+  }, [task]);
 
 
 
@@ -104,22 +101,23 @@ export default function AddTaskPopUp({ showAddtPopUp, onClose, task }) {
         </Typography>
         <Divider inset="none" />
         <CardContent className={classes.cardContent}>
-          <FormControl sx={{ gridColumn: '1/-1' }}>
-            <FormLabel>Task Subject</FormLabel>
+
+          <FormControl sx={{ gridColumn: '1/-1', width: '100%' }}>
+            <FormLabel>Task Name</FormLabel>
             <Input
-              value={formState.taskSobject || ""}
-              onChange={(e) => handleInputChange("taskSobject", e.target.value)}
+              value={formState.taskName || ""}
+              onChange={(e) => handleInputChange("taskName", e.target.value)}
             />
           </FormControl>
+
           <FormControl>
-            <FormLabel>Task Content</FormLabel>
-            <Input
-              sx={{ height: '150px' }}
-              endDecorator={<EditCalendarIcon />}
-              value={formState.taskContent || ""}
-              onChange={(e) => handleInputChange("taskContent", e.target.value)}
+            <FormLabel>Task Subject</FormLabel>
+            <TaskSubject
+              value={formState.taskSobject || ""}
+              onChange={(newValue) => handleInputChange("taskSobject", newValue)}
             />
           </FormControl>
+
           <FormControl>
             <FormLabel>Day to Complete</FormLabel>
             <SelectDateForTask
@@ -127,24 +125,32 @@ export default function AddTaskPopUp({ showAddtPopUp, onClose, task }) {
               func={(newValue) => handleInputChange("dayToComplete", newValue)}
             />
           </FormControl>
+
           <TaskPrioritySlider
             value={parseInt(formState.priority || "")}
             getAriaValueText={(value) => `${value}%`}
             fun={(newValue) => handleInputChange("priority", `${newValue}%`)}
           />
+
           <Checkbox
             label="Completed"
             sx={{ gridColumn: '1/-1', my: 1 }}
             checked={formState.completed || ""}
             onClick={() => handleInputChange("completed", !formState.completed)}
           />
+
+          <DialogMap />
+
           <CardActions sx={{ gridColumn: '1/-1' }}>
             <Button variant="solid" color="primary" onClick={handleSaveTask}>
               {isEditing ? "Save Changes" : "Add Task"}
             </Button>
           </CardActions>
+
         </CardContent>
       </Card>
     </Backdrop>
   );
 }
+
+export default TaskDealog

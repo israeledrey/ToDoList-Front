@@ -1,67 +1,46 @@
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTasksContext } from "../providers/TasksContext"
-import { getAllTasks } from "../api"
+
 import SingleTask from "../components/SingleTask"
-import AddTaskPopUp from "../components/AddTaskPopUp"
 import NavBar from "../components/NavBar"
-import Fab from '@mui/material/Fab';
-import AddIcon from '@mui/icons-material/Add';
+import TaskDealog from "../components/TaskDealog";
+import AddTask from '../components/taskAction/AddTask'
 
 
-export default function TasksList() {
 
-    const { setTasksList, tasksList } = useTasksContext();
-    const [showPopup, setShowPopup] = useState(false);
-    const [filteredTasks, setFilteredTasks] = useState(tasksList);
+const TasksList = () => {
 
-    useEffect(() => {
-        const fetchTasks = async () => {
-            const tasks = await getAllTasks(); 
-            setTasksList(tasks); 
-            setFilteredTasks(tasks); 
-        };
-
-        fetchTasks();
-    }, []);
+    const { filteredTasks, setFilteredTasks } = useTasksContext();
+    const [showPopup, setShowPopup] = useState(false)
 
     const closePopup = () => {
         setShowPopup(false);
     };
 
-    
-    const tasksToShow =  filteredTasks.length > 0 ? filteredTasks : tasksList;
 
     return (
         <div>
-            
-            <NavBar setFilteredTasks={setFilteredTasks}/>
+
+            <NavBar setFilteredTasks={setFilteredTasks} />
             <div style={{ marginTop: "150px" }}>
-                {tasksToShow.length > 0 
-                ? (
-                    <>
-                        <p style={{ fontSize: "25px" }}>Tasks List:</p>
-                        {tasksToShow.map((task) => (
-                            <SingleTask key={task._id} task={task} />
-                        ))}
-                    </>
-                ) : (
-                    <p style={{ fontSize: "20px", color: "gray" }}>No tasks found.</p>
-                )}
+                {filteredTasks.length > 0
+                    ? (
+                        <>
+                            <p style={{ fontSize: "25px" }}>Tasks List:</p>
+                            {filteredTasks.map((task, index) => (
+                                <SingleTask key={index} task={task} setShowPopup={setShowPopup} />
+                            ))}
+                        </>
+                    ) : (
+                        <p style={{ fontSize: "20px", color: "gray" }}>No tasks found.</p>
+                    )}
             </div>
+            <AddTask setShowPopup={setShowPopup} />
 
-
-            <Fab
-                color="primary"
-                aria-label="add"
-                sx={{ position: "fixed", bottom: 16, left: 16, zIndex: 1000 }}
-                onClick={() => setShowPopup(true)}
-            >
-                <AddIcon />
-            </Fab>
-
-            {showPopup && <AddTaskPopUp showAddtPopUp={showPopup} onClose={closePopup} />}
+            {showPopup && <TaskDealog showAddtPopUp={showPopup} onClose={closePopup} />}
 
         </div>
     )
 }
 
+export default TasksList

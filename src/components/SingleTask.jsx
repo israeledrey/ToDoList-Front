@@ -1,22 +1,21 @@
 import * as React from "react";
-import { makeStyles } from '@mui/styles';
 import { useState } from 'react';
-import { useTasksContext } from "../providers/TasksContext"
-import { deleteTask, getAllTasks } from "../api"
-import AddTaskPopUp from "./AddTaskPopUp"
+import { useTasksContext } from "../providers/TasksContext";
+
+import TaskDealog from "./TaskDealog"
 import TaskDetailsPopUp from "./TaskDetailsPopUp"
+import EditTask from "./taskAction/EditTask";
+import DeleteTask from "./taskAction/DeleteTask";
+
+import { makeStyles } from '@mui/styles';
 import Box from "@mui/material/Box";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Checkbox from "@mui/material/Checkbox";
 import Avatar from '@mui/material/Avatar';
-import IconButton from "@mui/material/IconButton";
-import CreateIcon from '@mui/icons-material/Create';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import { fontSize } from "@mui/system";
+
 
 
 
@@ -29,28 +28,18 @@ const useStyles = makeStyles({
         borderRadius: "4px",
         backgroundColor: "#f0f0f0",
     }
-})
+});
 
-
-
-export default function SingleTask({ task }) {
+const SingleTask = ({ task }) => {
 
     const classes = useStyles();
-    const { tasksList, setTasksList } = useTasksContext();
-    const [showPopup, setShowPopup] = useState(false);
     const [showDetailsPopUp, setShowDetailsPopUp] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
-
-
+    const [showPopup, setShowPopup] = useState(false);
 
     const closePopup = () => {
-        setShowPopup(false);
         setShowDetailsPopUp(false);
-    };
-
-    const handleShowEditTask = (task) => {
-        setSelectedTask(task);
-        setShowPopup(true);
+        setShowPopup(false);
     };
 
     const handleShowTaskDetails = (task) => {
@@ -58,38 +47,16 @@ export default function SingleTask({ task }) {
         setShowDetailsPopUp(!showDetailsPopUp);
     }
 
-    const handleDeleteTask = async (taskId) => {
-        try {
-            await deleteTask(taskId);
-            const updatedTasks = await getAllTasks(); 
-            setTasksList(updatedTasks); 
-        } catch (error) {
-            console.error("Error deleting task", error);
-        }
-    };
-
-
     return (
         <Box>
-
             <ListItem
                 className={classes.taskItem}
                 sx={{ mt: 2 }}
                 onClick={() => handleShowTaskDetails(task)}
                 secondaryAction={
                     <Box sx={{ display: "flex", gap: 1 }}>
-                        <IconButton edge="end" aria-label="edit" onClick={(event) => {
-                            handleShowEditTask(task)
-                            event.stopPropagation();
-                        }}>
-                            <CreateIcon />
-                        </IconButton>
-
-                        <IconButton edge="end" aria-label="delete" onClick={() =>
-                            handleDeleteTask(task._id)
-                        }>
-                            <DeleteIcon />
-                        </IconButton>
+                        <EditTask setSelectedTask={setSelectedTask} setShowPopup={setShowPopup} task={task} />
+                        <DeleteTask task={task} />
                     </Box>
                 }
                 disablePadding
@@ -102,16 +69,16 @@ export default function SingleTask({ task }) {
                     </ListItemIcon>
                     <ListItemText
                         id="single-task-label"
-                        primary={task.taskSobject}
+                        primary={task.taskName}
                         primaryTypographyProps={{ sx: { fontSize: '20px' } }}
                     />
                 </ListItemButton>
             </ListItem>
 
-
             {showDetailsPopUp && <TaskDetailsPopUp task={selectedTask} onClose={closePopup} />}
-            {showPopup && <AddTaskPopUp showAddtPopUp={showPopup} task={selectedTask} onClose={closePopup} />}
-
+            {showPopup && <TaskDealog showAddtPopUp={showPopup} task={selectedTask} onClose={closePopup} />}
         </Box>
     );
 }
+
+export default SingleTask

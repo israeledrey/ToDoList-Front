@@ -1,8 +1,10 @@
-import { makeStyles } from '@mui/styles';
 import { useState, useEffect } from 'react';
+import { useTasksContext } from "../providers/TasksContext"
+
+import { makeStyles } from '@mui/styles';
 import { InputBase } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { useTasksContext } from "../providers/TasksContext"
+
 
 
 const useStyles = makeStyles(() => ({
@@ -44,7 +46,7 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function SearchTask({setFilteredTasks}) {
+const SearchTask = ({ setFilteredTasks }) => {
 
     const classes = useStyles();
     const { tasksList } = useTasksContext();
@@ -55,13 +57,13 @@ export default function SearchTask({setFilteredTasks}) {
     };
 
     const handleSearchTask = (searchInput) => {
-        if (!searchInput || !tasksList) {
+        if (!searchInput) {
             setFilteredTasks(tasksList)
             return;
         }
 
         const filtered = tasksList.filter(task =>
-            task.taskSobject.toLowerCase().includes(searchInput.toLowerCase())
+            task.taskName.toLowerCase().includes(searchInput.toLowerCase())
         );
         setFilteredTasks(filtered);
     };
@@ -70,7 +72,7 @@ export default function SearchTask({setFilteredTasks}) {
         handleSearchTask(searchInput);
     }, [searchInput, tasksList]);
 
-   
+
 
     return (
         <div className={classes.search}>
@@ -86,3 +88,5 @@ export default function SearchTask({setFilteredTasks}) {
         </div>
     );
 }
+
+export default SearchTask
