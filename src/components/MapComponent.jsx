@@ -34,7 +34,7 @@ const MapComponent = ({ style, center, zoom, iconUrl, mode }) => {
     vectorLayerRef.current = vectorLayer
 
 
-    console.log("Creating a new map...");
+  
     const map = new Map({
       target: mapRef.current,
       layers: [

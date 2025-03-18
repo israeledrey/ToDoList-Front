@@ -27,8 +27,8 @@ const TasksList = () => {
                     ? (
                         <>
                             <p style={{ fontSize: "25px" }}>Tasks List:</p>
-                            {filteredTasks.map((task) => (
-                                <SingleTask key={task._id} task={task} setShowPopup={setShowPopup} />
+                            {filteredTasks.map((task, index) => (
+                                <SingleTask key={index} task={task} setShowPopup={setShowPopup} />
                             ))}
                         </>
                     ) : (

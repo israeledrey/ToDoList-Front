@@ -59,11 +59,12 @@ const TaskDealog = ({ showAddtPopUp, onClose, task }) => {
   const {
     formState,
     setFormState,
-    resetFormState
+    resetFormState,
+    isEditing, 
+    setIsEditing
   } = useTasksContext();
   const { handleEditTask, handleAddTask } = useTaskActions();
-
-  const isEditing = !!task;
+  
 
   const handleInputChange = (field, value) => {
     setFormState((prevValue) => ({ ...prevValue, [field]: value }));
@@ -71,8 +72,9 @@ const TaskDealog = ({ showAddtPopUp, onClose, task }) => {
 
 
   const handleSaveTask = async () => {
-    if (isEditing && task) {
+    if (isEditing) {
       handleEditTask(task);
+      setIsEditing(false) 
     } else {
       handleAddTask();
     }
@@ -82,10 +84,8 @@ const TaskDealog = ({ showAddtPopUp, onClose, task }) => {
 
 
   useEffect(() => {
-    if (task) {
-      setFormState(task);
-      console.log(task);
-      
+    if (isEditing && task) {
+      setFormState(task); 
     } else {
       resetFormState();
     }

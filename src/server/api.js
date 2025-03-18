@@ -15,8 +15,10 @@ export const getAllTasks = async () => {
 
 // Add new task
 export const addNewTask = async (task) => {
+  console.log(task);
+  
   try {
-    const response = await axios.post(`${API_URL}/tasks/createTask`,  task );
+    const response = await axios.post(`${API_URL}/tasks/createTask`,  task ); 
     return response.data; 
   } catch (error) {
     console.error('Error adding todo', error);

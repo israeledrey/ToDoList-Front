@@ -10,7 +10,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
   
   const handleDateChange = (newValue) => {
     if (newValue) {
-      const formattedDate = newValue.format("DD/MM/YYYY"); 
+      const formattedDate = newValue.format("YYYY-MM-DD"); 
       func(formattedDate); 
     }
   };

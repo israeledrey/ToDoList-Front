@@ -15,6 +15,7 @@ export const TasksProvider = ({ children }) => {
     };
     const [formState, setFormState] = useState(initialFormState);
     const [filteredTasks, setFilteredTasks] = useState(tasksList);
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -28,8 +29,6 @@ export const TasksProvider = ({ children }) => {
                 console.error("Error fetching tasks:", error);
             }
         };
-        console.log("faching tasks");
-        
         fetchTasks();
     }, [tasksList]);
 
@@ -45,7 +44,9 @@ export const TasksProvider = ({ children }) => {
             setFormState,
             resetFormState,
             filteredTasks,
-            setFilteredTasks
+            setFilteredTasks,
+            setIsEditing,
+            isEditing
         }}>
             {children}
         </TasksContext.Provider>

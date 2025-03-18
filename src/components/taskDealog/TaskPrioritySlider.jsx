@@ -52,7 +52,7 @@ const PrettoSlider = styled(Slider)({
 
 const TaskPrioritySlider = ({fun}) => {
 
-    const handlePriorityChange = (newValue) => {
+    const handlePriorityChange = (event, newValue) => {
         fun(newValue);  
     };
     
