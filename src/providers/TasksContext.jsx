@@ -3,6 +3,7 @@ import { getAllTasks } from '../server/api'
 
 export const TasksContext = createContext();
 
+
 export const TasksProvider = ({ children }) => {
     const [tasksList, setTasksList] = useState([]);
     const initialFormState = {
