@@ -22,16 +22,16 @@ export const TasksProvider = ({ children }) => {
         const fetchTasks = async () => {
             try {
                 const tasks = await getAllTasks();
-                if (JSON.stringify(tasks) !== JSON.stringify(tasksList)) {
                     setTasksList(tasks);
-                    setFilteredTasks(tasks); 
-                  }
+                    setFilteredTasks(tasks);
+                    console.log("fff");
+                    
             } catch (error) {
                 console.error("Error fetching tasks:", error);
             }
         };
         fetchTasks();
-    }, [tasksList]);
+    }, [formState]);
 
     const resetFormState = () => {
         setFormState({ ...initialFormState });
