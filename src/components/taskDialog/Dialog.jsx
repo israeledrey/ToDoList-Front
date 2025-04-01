@@ -1,10 +1,12 @@
-import { useEffect } from 'react';
-import { useTasksContext } from "../providers/TasksContext"
-import { useTaskActions } from '../hooks/useTaskActions';
+import { useAtom } from "jotai";
+import { isEditingAtom } from "../../atoms/tasksAtoms";
+import { useTaskForm } from "../../hooks/useTaskForm";
 
-import TaskPrioritySlider from "./taskDealog/TaskPrioritySlider"
-import SelectDateForTask from "./taskDealog/SelcetDateForTask"
-import TaskSubject from "./taskDealog/TaskSubject"
+import PrioritySlider from "./PrioritySlider";
+import DateSelector from "./DateSelector";
+import Subject from "./Subject";
+import Map from './DialogMap';
+import SnackbarComponent from './SnackbarComponent';
 
 import { makeStyles } from '@mui/styles';
 import Card from '@mui/joy/Card';
@@ -19,8 +21,6 @@ import Typography from '@mui/joy/Typography';
 import Button from '@mui/joy/Button';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import Backdrop from '@mui/material/Backdrop';
-import DialogMap from './taskDealog/DialogMap';
-
 
 
 const useStyles = makeStyles({
@@ -52,49 +52,16 @@ const useStyles = makeStyles({
 });
 
 
-
-const TaskDealog = ({ showAddtPopUp, onClose, task }) => {
-
+const Dialog = ({ showDialog, onClose, task }) => {
   const classes = useStyles();
-  const {
-    formState,
-    setFormState,
-    resetFormState,
-    isEditing, 
-    setIsEditing
-  } = useTasksContext();
-  const { handleEditTask, handleAddTask } = useTaskActions();
-  
+  const [isEditing, setIsEditing] = useAtom(isEditingAtom);
+  const { formik, handleFieldChange, handleValidation, snackbar, setSnackbar } = useTaskForm(task, onClose);
 
-  const handleInputChange = (field, value) => {
-    setFormState((prevValue) => ({ ...prevValue, [field]: value }));
-  };
-
-
-  const handleSaveTask = async () => {
-    if (isEditing) {
-      handleEditTask(task);
-      setIsEditing(false) 
-    } else {
-      handleAddTask();
-    }
-
-    onClose();
-  };
-
-
-  useEffect(() => {
-    if (isEditing && task) {
-      setFormState(task); 
-    } else {
-      resetFormState();
-    }
-  }, [task]);
-
+  const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false })
 
 
   return (
-    <Backdrop open={showAddtPopUp} className={classes.backdrop} onClick={onClose}>
+    <Backdrop open={showDialog} className={classes.backdrop} onClick={onClose}>
       <Card className={classes.card} onClick={(e) => e.stopPropagation()} variant="outlined">
         <Typography level="title-lg" startDecorator={<InfoOutlined />}>
           {isEditing ? "Edit Task" : "Add New Task"}
@@ -105,52 +72,63 @@ const TaskDealog = ({ showAddtPopUp, onClose, task }) => {
           <FormControl sx={{ gridColumn: '1/-1', width: '100%' }}>
             <FormLabel>Task Name</FormLabel>
             <Input
-              value={formState.taskName || ""}
-              onChange={(e) => handleInputChange("taskName", e.target.value)}
+              value={formik.values.name}
+              onChange={handleFieldChange('name')}
+              onBlur={handleValidation('name')}
             />
           </FormControl>
 
           <FormControl>
             <FormLabel>Task Subject</FormLabel>
-            <TaskSubject
-              value={formState.taskSobject || ""}
-              onChange={(newValue) => handleInputChange("taskSobject", newValue)}
+            <Subject
+              value={formik.values.subject}
+              onChange={handleFieldChange('subject')}
+              onBlur={handleValidation('subject')}
             />
           </FormControl>
 
           <FormControl>
             <FormLabel>Day to Complete</FormLabel>
-            <SelectDateForTask
-              value={formState.dayToComplete || ""}
-              func={(newValue) => handleInputChange("dayToComplete", newValue)}
+            <DateSelector
+              value={formik.values.dayToComplete}
+              handleChange={handleFieldChange('dayToComplete')}
+              onBlur={handleValidation('dayToComplete')}
             />
           </FormControl>
 
-          <TaskPrioritySlider
-            value={parseInt(formState.priority || "")}
+          <PrioritySlider
+            value={parseInt(formik.values.priority)}
             getAriaValueText={(value) => `${value}%`}
-            fun={(newValue) => handleInputChange("priority", `${newValue}%`)}
+            onChange={handleFieldChange('priority')}
+            onBlur={handleValidation('priority')}
           />
 
           <Checkbox
             label="Completed"
-            sx={{ gridColumn: '1/-1', my: 1 }}
-            checked={formState.completed || ""}
-            onClick={() => handleInputChange("completed", !formState.completed)}
+            sx={{ gridColumn: "1/-1", my: 1 }}
+            checked={formik.values.completed}
+            onChange={handleFieldChange('completed')}
+            onBlur={handleValidation('completed')}
           />
 
-          <DialogMap />
+          <Map
+            onLocationSelect={handleFieldChange('location')}
+            onBlur={handleValidation('location')}
+          />
 
           <CardActions sx={{ gridColumn: '1/-1' }}>
-            <Button variant="solid" color="primary" onClick={handleSaveTask}>
+            <Button variant="solid" color="primary" onClick={formik.handleSubmit}>
               {isEditing ? "Save Changes" : "Add Task"}
             </Button>
           </CardActions>
 
         </CardContent>
       </Card>
+
+      <SnackbarComponent snackbar={snackbar} handleCloseSnackbar={handleCloseSnackbar} />
+
     </Backdrop>
   );
-}
+};
 
-export default TaskDealog
+export default Dialog;

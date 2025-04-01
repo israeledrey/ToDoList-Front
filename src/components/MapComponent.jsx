@@ -1,32 +1,36 @@
 import { useEffect, useRef } from "react";
-import { fromLonLat } from 'ol/proj';
+import { useAtom } from 'jotai';
+import { tasksListAtom } from '../atoms/tasksAtoms';
+
+
 import Map from "ol/Map";
 import View from "ol/View";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM";
 import Link from 'ol/interaction/Link';
+import { fromLonLat } from 'ol/proj';
+
 import { Style, Icon } from 'ol/style';
-import { Feature } from 'ol'; 
-import { Vector as VectorLayer } from 'ol/layer'; 
-import { Vector as VectorSource } from 'ol/source'; 
+import { Feature } from 'ol';
+import { Vector as VectorLayer } from 'ol/layer';
+import { Vector as VectorSource } from 'ol/source';
 import Point from 'ol/geom/Point';
-import { useTasksContext } from "../providers/TasksContext";
 
 
 
-const MapComponent = ({ style, center, zoom, iconUrl, mode }) => {
-  const {setFormState, tasksList} = useTasksContext();
+const MapComponent = ({ style, center, zoom, iconUrl, mode, onLocationSelect }) => {
+  const [ tasksList ] = useAtom(tasksListAtom);
   const mapRef = useRef(null);
   const vectorSourceRef = useRef(null);
   const vectorLayerRef = useRef(null);
 
 
-  
+
   useEffect(() => {
     if (!mapRef.current) return;
 
     const vectorSource = new VectorSource();
-    vectorSourceRef.current = vectorSource; 
+    vectorSourceRef.current = vectorSource;
 
     const vectorLayer = new VectorLayer({
       source: vectorSource,
@@ -34,7 +38,7 @@ const MapComponent = ({ style, center, zoom, iconUrl, mode }) => {
     vectorLayerRef.current = vectorLayer
 
 
-  
+
     const map = new Map({
       target: mapRef.current,
       layers: [
@@ -52,14 +56,13 @@ const MapComponent = ({ style, center, zoom, iconUrl, mode }) => {
 
     if (mode === "user") {
       map.on("click", function (event) {
-        const coordinate = event.coordinate; 
-        console.log("Clicked coordinate:", coordinate);
+        const coordinate = event.coordinate;
         vectorSource.clear();
 
         const iconFeature = new Feature({
           geometry: new Point(coordinate),
         });
-       
+
         iconFeature.setStyle(
           new Style({
             image: new Icon({
@@ -69,32 +72,32 @@ const MapComponent = ({ style, center, zoom, iconUrl, mode }) => {
             }),
           })
         );
-        
-        
-        setFormState((prevValue) => ({
-          ...prevValue,
-          location: coordinate
-        }));
-         
-        vectorSource.addFeature(iconFeature);  
+
+
+        vectorSource.addFeature(iconFeature);
+
+        if (onLocationSelect) {
+          onLocationSelect(coordinate); 
+        }
       });
     }
+
     map.addInteraction(new Link());
 
     return () => {
       map.setTarget(null);
     };
-  }, [ zoom, iconUrl]);
+  }, [zoom, iconUrl]);
 
 
-  useEffect(()=>{
+  useEffect(() => {
     if (mode === "admin") {
       tasksList.forEach((task) => {
-        if (task.location) { 
+        if (task.location) {
           const iconFeature = new Feature({
             geometry: new Point(task.location),
           });
-    
+
           iconFeature.setStyle(
             new Style({
               image: new Icon({
@@ -104,14 +107,18 @@ const MapComponent = ({ style, center, zoom, iconUrl, mode }) => {
               }),
             })
           );
-    
-          vectorSourceRef.current.addFeature(iconFeature); 
+
+          vectorSourceRef.current.addFeature(iconFeature);
         }
       });
     }
   }, [iconUrl, mode, tasksList])
 
-  return <div ref={mapRef} style={style} />;
+
+  
+  return (
+    <div ref={mapRef} style={style} />
+  )
 };
 
 export default MapComponent;

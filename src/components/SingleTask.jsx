@@ -1,9 +1,8 @@
 import * as React from "react";
 import { useState } from 'react';
-import { useTasksContext } from "../providers/TasksContext";
 
-import TaskDealog from "./TaskDealog"
-import TaskDetailsPopUp from "./TaskDetailsPopUp"
+import Dialog from "./taskDialog/Dialog"
+import TaskDetails from "./TaskDetails"
 import EditTask from "./taskAction/EditTask";
 import DeleteTask from "./taskAction/DeleteTask";
 
@@ -35,11 +34,11 @@ const SingleTask = ({ task }) => {
     const classes = useStyles();
     const [showDetailsPopUp, setShowDetailsPopUp] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
-    const [showPopup, setShowPopup] = useState(false);
+    const [showDialog, setShowDialog] = useState(false);
 
     const closePopup = () => {
         setShowDetailsPopUp(false);
-        setShowPopup(false);
+        setShowDialog(false);
     };
 
     const handleShowTaskDetails = (task) => {
@@ -55,7 +54,7 @@ const SingleTask = ({ task }) => {
                 onClick={() => handleShowTaskDetails(task)}
                 secondaryAction={
                     <Box sx={{ display: "flex", gap: 1 }}>
-                        <EditTask setSelectedTask={setSelectedTask} setShowPopup={setShowPopup} task={task} />
+                        <EditTask setSelectedTask={setSelectedTask} setShowDialog={setShowDialog} task={task} />
                         <DeleteTask task={task} />
                     </Box>
                 }
@@ -69,14 +68,14 @@ const SingleTask = ({ task }) => {
                     </ListItemIcon>
                     <ListItemText
                         id="single-task-label"
-                        primary={task.taskName}
+                        primary={task.name}
                         primaryTypographyProps={{ sx: { fontSize: '20px' } }}
                     />
                 </ListItemButton>
             </ListItem>
 
-            {showDetailsPopUp && <TaskDetailsPopUp task={selectedTask} onClose={closePopup} />}
-            {showPopup && <TaskDealog showAddtPopUp={showPopup} task={selectedTask} onClose={closePopup} />}
+            {showDetailsPopUp && <TaskDetails task={selectedTask} onClose={closePopup} />}
+            {showDialog && <Dialog showDialog={showDialog} task={selectedTask} onClose={closePopup} />}
         </Box>
     );
 }

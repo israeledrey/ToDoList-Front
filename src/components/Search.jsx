@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useTasksContext } from "../providers/TasksContext"
+import { useAtom } from 'jotai';
+import { searchInputAtom } from '../atoms/tasksAtoms';
 
 import { makeStyles } from '@mui/styles';
 import { InputBase } from '@mui/material';
@@ -46,33 +46,16 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-const SearchTask = ({ setFilteredTasks }) => {
+const Search = () => {
 
     const classes = useStyles();
-    const { tasksList } = useTasksContext();
-    const [searchInput, setSearchInput] = useState("");
+    const [searchInput, setSearchInput] = useAtom(searchInputAtom);
 
-    const InputChange = (event) => {
+    const onChange = (event) => {
         setSearchInput(event.target.value);
     };
 
-    const handleSearchTask = (searchInput) => {
-        if (!searchInput) {
-            setFilteredTasks(tasksList)
-            return;
-        }
-
-        const filtered = tasksList.filter(task =>
-            task.taskName.toLowerCase().includes(searchInput.toLowerCase())
-        );
-        setFilteredTasks(filtered);
-    };
-
-    useEffect(() => {
-        handleSearchTask(searchInput);
-    }, [searchInput, tasksList]);
-
-
+      
 
     return (
         <div className={classes.search}>
@@ -80,7 +63,8 @@ const SearchTask = ({ setFilteredTasks }) => {
                 <SearchIcon />
             </div>
             <InputBase
-                onChange={InputChange}
+                value={searchInput}
+                onChange={onChange}
                 placeholder="Search…"
                 inputProps={{ 'aria-label': 'search' }}
                 classes={{ root: classes.inputBase }}
@@ -89,4 +73,4 @@ const SearchTask = ({ setFilteredTasks }) => {
     );
 }
 
-export default SearchTask
+export default Search

@@ -2,11 +2,11 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:3000';
 
-// Render all tsks to the client
+// Render all tasks to the client
 export const getAllTasks = async () => {
   try {
-    const response = await axios.get(`${API_URL}/tasksList`);
-    return response.data;
+    const { data } = await axios.get(`${API_URL}/tasksList`);
+    return data;
   } catch (error) {
     console.error('Error fetching todos', error);
     return [];
@@ -15,21 +15,21 @@ export const getAllTasks = async () => {
 
 // Add new task
 export const addNewTask = async (task) => {
-  console.log(task);
-
   try {
-    const response = await axios.post(`${API_URL}/tasks/createTask`, task);
-    return response.data;
+    const { data } = await axios.post(`${API_URL}/tasks/createTask`, task);    
+    return data;
   } catch (error) {
     console.error('Error adding todo', error);
   }
 };
 
 // Edit task
-export const updateTask = async (_id, updates) => {
+export const updateTask = async (_id, values) => {
   try {
-    const response = await axios.put(`${API_URL}/tasksList/${_id}`, updates);
-    return response.data;
+    const { data } = await axios.put(`${API_URL}/tasksList/${_id}`, values);
+    console.log(values);
+    
+    return data;
   } catch (error) {
 
     console.error('Error updating todo', error);
@@ -38,7 +38,6 @@ export const updateTask = async (_id, updates) => {
 
 // Delete task
 export const deleteTask = async (_id) => {
-  if (!_id) throw new Error("Task ID is missing");
   try {
     await axios.delete(`${API_URL}/tasksList/${_id}`);
 

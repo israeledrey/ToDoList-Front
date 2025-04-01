@@ -1,33 +1,30 @@
 import React from 'react';
-
+import { useAtom } from 'jotai';
+import { isEditingAtom } from '../../atoms/tasksAtoms';
 import IconButton from "@mui/material/IconButton";
 import CreateIcon from '@mui/icons-material/Create';
-import { useTasksContext } from '../../providers/TasksContext';
 
 
 
-const EditTask = ({ setSelectedTask, setShowPopup, task }) => {
+const EditTask = ({ setSelectedTask, setShowDialog, task }) => {
 
-    const { setIsEditing } = useTasksContext();
-    
-    const handleShowEditTask = () => {
-        setSelectedTask(task); 
-        setShowPopup(true);
+    const [, setIsEditing] = useAtom(isEditingAtom);
+
+    const handleShowEditTask = (event) => {
+        setSelectedTask(task);
+        setShowDialog(true);
+        setIsEditing(true);
+        event.stopPropagation();
     };
 
     return (
-        <>
-            <IconButton
-                edge="end"
-                aria-label="edit"
-                onClick={(event) => {
-                    setIsEditing(true);
-                    handleShowEditTask();
-                    event.stopPropagation();
-                }}>
-                <CreateIcon />
-            </IconButton>
-        </>
+        <IconButton
+            edge="end"
+            aria-label="edit"
+            onClick={handleShowEditTask}
+        >
+            <CreateIcon />
+        </IconButton>
     );
 }
 

@@ -5,7 +5,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 
 
 
- const TaskSubject = ({ value, onChange }) => {
+const Subject = ({ value, onChange }) => {
   const options = [
     { label: 'Work', id: 1 },
     { label: 'leisure', id: 2 },
@@ -24,4 +24,4 @@ import Autocomplete from '@mui/material/Autocomplete';
   );
 }
 
-export default TaskSubject
+export default Subject

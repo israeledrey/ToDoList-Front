@@ -6,12 +6,12 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 
 
- const SelectDateForTask = ({ func }) => {
+ const DateSelector = ({ handleChange }) => {
   
-  const handleDateChange = (newValue) => {
+  const onDateSelect = (newValue) => {
     if (newValue) {
       const formattedDate = newValue.format("YYYY-MM-DD"); 
-      func(formattedDate); 
+      handleChange(formattedDate); 
     }
   };
 
@@ -19,10 +19,10 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
     <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
           label="Select Date"
-          onChange={handleDateChange}
+          onChange={onDateSelect}
         />
     </LocalizationProvider>
   );
 }
 
-export default SelectDateForTask
+export default DateSelector

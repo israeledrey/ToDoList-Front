@@ -1,6 +1,7 @@
 import { useState } from "react";
-import SearchTask from "./SearchTask";
-import { useNavigate } from "react-router-dom";
+import Search from "./Search";
+
+import NavMenu from "./NavMenu";
 
 import { makeStyles } from "@mui/styles";
 import AppBar from "@mui/material/AppBar";
@@ -9,8 +10,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 
 const useStyles = makeStyles({
   appBar: {
@@ -30,22 +29,16 @@ const useStyles = makeStyles({
 });
 
 const NavBar = ({ setFilteredTasks }) => {
+
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
-  const navigate = useNavigate();
+
 
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
 
-  const handleNavigate = (path) => {
-    navigate(path);
-    handleCloseMenu();
-  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -60,20 +53,12 @@ const NavBar = ({ setFilteredTasks }) => {
             <MenuIcon />
           </IconButton>
 
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleCloseMenu}
-          >
-            <MenuItem onClick={() => handleNavigate("/map")}>📍 Map</MenuItem>
-            <MenuItem onClick={() => handleNavigate("/tasks")}>✅ Tasks</MenuItem>
-            <MenuItem onClick={() => handleNavigate("/table")}>📊 Table</MenuItem>
-          </Menu>
+          <NavMenu anchorEl={anchorEl} setAnchorEl={setAnchorEl} />
 
           <Typography variant="h6" component="div" className={classes.title}>
             To Do List
           </Typography>
-          <SearchTask setFilteredTasks={setFilteredTasks} />
+          <Search setFilteredTasks={setFilteredTasks} />
         </Toolbar>
       </AppBar>
     </Box>

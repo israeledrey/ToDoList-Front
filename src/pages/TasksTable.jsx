@@ -1,139 +1,57 @@
-import { useMemo, useState } from 'react';
-import { useTasksContext } from "../providers/TasksContext";
+import { useState } from 'react';
+import { useAtom } from 'jotai';
+import { filteredTasksAtom } from '../atoms/tasksAtoms'
+import { useFetchTasks } from '../hooks/useFetchTasks';
 
 import NavBar from '../components/NavBar';
-import TaskDealog from '../components/TaskDealog';
+import Container from '../components/table/Container'
+import Dialog from '../components/taskDialog/Dialog';
 import AddTask from '../components/taskAction/AddTask';
-import EditTask from '../components/taskAction/EditTask';
-import DeleteTask from '../components/taskAction/DeleteTask';
 
 import { makeStyles } from '@mui/styles';
-import { useReactTable, getCoreRowModel, getSortedRowModel, flexRender } from "@tanstack/react-table";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-
 
 
 
 const useStyles = makeStyles({
-  headCell: {
-    backgroundColor: "#A0A0A0",
-    color: "#fff",
-    fontWeight: "bold",
-    transition: "background-color 0.3s ease, transform 0.2s ease",
-  },
-  bodyCell: {
-    fontSize: 14,
-  },
-  oddRow: {
-    backgroundColor: "#f5f5f5",
-  },
+  noTasks: {
+    fontSize: "20px",
+    color: "gray",
+    textAlign: "center",
+    marginTop: "150px",
+  }
 });
 
+
 const TasksTable = () => {
+
   const classes = useStyles();
-  const { tasksList, filteredTasks, setFilteredTasks } = useTasksContext();
-
-
-  const data = useMemo(() => filteredTasks, [filteredTasks]);
-  const columns = useMemo(() => [
-    { header: "Task Name ", accessorKey: "taskName" },
-    { header: "Task Subject", accessorKey: "taskSobject" },
-    { header: "Day To Complete", accessorKey: "dayToComplete" },
-    { header: "Priority", accessorKey: "priority" },
-    { header: "Completed", accessorKey: "completed" },
-    {
-      header: "Edit",
-      id: "edit",
-      cell: ({ row }) => (
-        <EditTask
-          task={row.original}
-          setSelectedTask={setSelectedTask}
-          setShowPopup={setShowPopup}
-        />
-      )
-    },
-    {
-      header: "Delete",
-      id: "delete",
-      cell: ({ row }) => (
-        <DeleteTask
-          task={row.original}
-        />
-      )
-    }
-  ], []);
-
-  const [sorting, setSortng] = useState([]);
-  const [showPopup, setShowPopup] = useState(false);
+  const { isLoading, isError } = useFetchTasks();
+  const [filteredTasks, setFilteredTasks] = useAtom(filteredTasksAtom);
+  const [showDialog, setShowDialog] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    state: {
-      sorting: sorting,
-    },
-    onSortingChange: setSortng,
-  });
 
-  if (!tasksList || tasksList.length === 0) {
-    return <p>No tasks available.</p>;
-  }
+  const closePopup = () => {
+    setShowDialog(false);
+  };
+
+  if (isLoading) return <p className={classes.noTasks}>Loading tasks...</p>;
+  if (isError) return <p className={classes.noTasks}>Error fetching tasks.</p>;
+
 
   return (
     <>
       <NavBar setFilteredTasks={setFilteredTasks} />
-      <TableContainer component={Paper} className={classes.tableContainer} sx={{ mt: '90px' }}>
-        <Table>
 
-          <TableHead>
-            {table.getHeaderGroups().map(headerGroup => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
-                  <TableCell
-                    key={header.id}
-                    className={classes.headCell}
-                    onClick={header.column.getToggleSortingHandler()}
-                  >
-                    {header.isPlaceholder ? null : (
-                      <div>
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        {{ sec: <KeyboardArrowDownIcon />, desc: <KeyboardArrowUpIcon /> }[header.column.getIsSorted() ?? null]}
-                      </div>
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableHead>
+      {
+        filteredTasks.length ?
+          <Container tasks={filteredTasks} setShowDialog={setShowDialog} setSelectedTask={setSelectedTask} />
+          :
+          <p className={classes.noTasks}>No tasks found.</p>
+      }
 
-          <TableBody>
-            {table.getRowModel().rows.map((row, index) => (
-              <TableRow key={row.id} className={index % 2 === 0 ? classes.oddRow : ""}>
-                {row.getVisibleCells().map(cell => (
-                  <TableCell key={cell.id} className={classes.bodyCell}>
-                    {flexRender(cell.column.columnDef.cell ?? cell.column.columnDef.accessorKey, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      <AddTask setShowPopup={setShowPopup} />
-
-      {showPopup && <TaskDealog showAddtPopUp={showPopup} task={selectedTask} onClose={() => setShowPopup(false)} />}
+      <AddTask setShowDialog={setShowDialog} />
+      {showDialog && <Dialog showDialog={showDialog} task={selectedTask} onClose={closePopup} />}
     </>
   );
 }

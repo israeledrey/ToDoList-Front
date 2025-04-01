@@ -11,7 +11,7 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import LowPriorityIcon from '@mui/icons-material/LowPriority';
 
 
-const TaskDetailsPopUp = ({ task }) => {
+const TaskDetails = ({ task }) => {
 
 
   return (
@@ -24,7 +24,7 @@ const TaskDetailsPopUp = ({ task }) => {
             <FormatListBulletedIcon />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={task.taskSobject} secondary="Task subject" />
+        <ListItemText primary={task.subject} secondary="Task subject" />
       </ListItem>
 
       <ListItem>
@@ -58,4 +58,4 @@ const TaskDetailsPopUp = ({ task }) => {
   );
 }
 
-export default TaskDetailsPopUp
+export default TaskDetails

@@ -1,46 +1,69 @@
-import { useState } from 'react'
-import { useTasksContext } from "../providers/TasksContext"
+import { useState, useMemo } from 'react';
+import { useFetchTasks } from '../hooks/useFetchTasks';
+import { useAtom } from 'jotai';
+import { filteredTasksAtom } from '../atoms/tasksAtoms';
 
-import SingleTask from "../components/SingleTask"
-import NavBar from "../components/NavBar"
-import TaskDealog from "../components/TaskDealog";
-import AddTask from '../components/taskAction/AddTask'
+import SingleTask from "../components/SingleTask";
+import NavBar from "../components/NavBar";
+import Dialog from "../components/taskDialog/Dialog";
+import AddTask from '../components/taskAction/AddTask';
+
+import { makeStyles } from '@mui/styles';
+
+
+
+const useStyles = makeStyles({
+    tasksContainer: {
+        marginTop: "150px"
+    },
+    noTasks: {
+        fontSize: "20px",
+        color: "gray",
+        textAlign: "center",
+        marginTop: "150px",
+    }
+});
 
 
 
 const TasksList = () => {
 
-    const { filteredTasks, setFilteredTasks } = useTasksContext();
-    const [showPopup, setShowPopup] = useState(false)
+    const classes = useStyles();
+    const { isLoading, isError } = useFetchTasks();
+    const [filteredTasks] = useAtom(filteredTasksAtom);
+    const [showDialog, setShowDialog] = useState(false);
+
+    const renderTasks = useMemo(() => {
+        return filteredTasks.map((task) => (
+            <SingleTask key={task._id} task={task} setShowDialog={setShowDialog} />
+        ));
+    }, [filteredTasks, setShowDialog]);
 
     const closePopup = () => {
-        setShowPopup(false);
+        setShowDialog(false);
     };
 
+    if (isLoading) return <p className={classes.noTasks}>Loading tasks...</p>;
+    if (isError) return <p className={classes.noTasks}>Error fetching tasks.</p>;
 
     return (
-        <div>
-
-            <NavBar setFilteredTasks={setFilteredTasks} />
-            <div style={{ marginTop: "150px" }}>
-                {filteredTasks.length > 0
-                    ? (
-                        <>
-                            <p style={{ fontSize: "25px" }}>Tasks List:</p>
-                            {filteredTasks.map((task, index) => (
-                                <SingleTask key={index} task={task} setShowPopup={setShowPopup} />
-                            ))}
-                        </>
-                    ) : (
-                        <p style={{ fontSize: "20px", color: "gray" }}>No tasks found.</p>
-                    )}
+        <>
+            <NavBar />
+            <div className={classes.tasksContainer}>
+                {filteredTasks.length ?
+                    <>
+                        <p style={{ fontSize: "25px" }}>Tasks List:</p>
+                        {renderTasks}
+                    </>
+                    :
+                    <p className={classes.noTasks}>No tasks found.</p>
+                }
             </div>
-            <AddTask setShowPopup={setShowPopup} />
+            <AddTask setShowDialog={setShowDialog} />
 
-            {showPopup && <TaskDealog showAddtPopUp={showPopup} onClose={closePopup} />}
+            {showDialog && <Dialog showDialog={showDialog} onClose={closePopup} />}
+        </>
+    );
+};
 
-        </div>
-    )
-}
-
-export default TasksList
+export default TasksList;

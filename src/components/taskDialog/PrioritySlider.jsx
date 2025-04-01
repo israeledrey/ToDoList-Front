@@ -50,10 +50,10 @@ const PrettoSlider = styled(Slider)({
 
 
 
-const TaskPrioritySlider = ({fun}) => {
+const PrioritySlider = ({onChange}) => {
 
     const handlePriorityChange = (event, newValue) => {
-        fun(newValue);  
+        onChange(newValue);  
     };
     
     return (
@@ -70,4 +70,4 @@ const TaskPrioritySlider = ({fun}) => {
     );
 }
 
-export default TaskPrioritySlider
+export default PrioritySlider

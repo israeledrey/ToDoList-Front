@@ -1,35 +1,42 @@
-import { useTasksContext } from '../providers/TasksContext';
-import { addNewTask, updateTask, deleteTask, getAllTasks } from '../server/api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { addNewTask, updateTask, deleteTask } from '../server/api';
+import { taskSchema } from '../validation/TaskSchema';
+
+
 
 export const useTaskActions = () => {
-    const { formState, setTasksList, resetFormState } = useTasksContext();
+    const queryClient = useQueryClient();
 
-    const handleAddTask = async () => {
-        const newTask = await addNewTask(formState);
-        setTasksList(prevTasks => [...prevTasks, newTask]);
-        resetFormState();
+    const addTaskMutation = useMutation({
+        mutationFn: async (values) => {
+            await taskSchema.validate(values);
+            return addNewTask(values);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['tasks']);
+        },
+    });
+
+    const editTaskMutation = useMutation({
+        mutationFn: async ({ id, values }) => {
+            await taskSchema.validate(values);
+            return updateTask(id, values);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['tasks']);
+        },
+    });
+
+    const deleteTaskMutation = useMutation({
+        mutationFn: deleteTask,
+        onSuccess: () => {
+            queryClient.invalidateQueries(['tasks']);
+        },
+    });
+
+    return {
+        handleAddTask: addTaskMutation.mutateAsync,
+        handleEditTask: editTaskMutation.mutateAsync,
+        handleDeleteTask: deleteTaskMutation.mutateAsync,
     };
-
-    const handleEditTask = async (task) => {
-        const updatedTask = await updateTask(task._id, formState);
-        if (!updatedTask) {
-            console.error("Failed to update task");
-            return;
-        }
-        setTasksList((prevList) =>
-            prevList.map((t) => (t._id === updatedTask._id ? updatedTask : t))
-        );
-    };
-
-    const handleDeleteTask = async (_id) => {
-        try {
-            await deleteTask(_id);
-            const updatedTasks = await getAllTasks();
-            setTasksList(updatedTasks);
-        } catch (error) {
-            console.error("Error deleting task", error);
-        }
-    };
-
-    return { handleAddTask, handleEditTask, handleDeleteTask };
 };

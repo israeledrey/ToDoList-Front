@@ -4,7 +4,7 @@ import { Box } from '@mui/system';
 
 
 
-const DialogMap = () => {
+const Map = ({onLocationSelect}) => {
 
     return (
         <Box>
@@ -14,10 +14,11 @@ const DialogMap = () => {
                 center={ [-118.2437, 34.0522]}
                 zoom={15}
                 mode="user"
+                onLocationSelect={onLocationSelect}
             />
         </Box>
 
     )
 }
 
-export default DialogMap
+export default Map
