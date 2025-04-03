@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:3000';
 // Render all tasks to the client
 export const getAllTasks = async () => {
   try {
-    const { data } = await axios.get(`${API_URL}/tasksList`);
+    const { data } = await axios.get(`${API_URL}/tasks`);
     return data;
   } catch (error) {
     console.error('Error fetching todos', error);
@@ -26,7 +26,7 @@ export const addNewTask = async (task) => {
 // Edit task
 export const updateTask = async (_id, values) => {
   try {
-    const { data } = await axios.put(`${API_URL}/tasksList/${_id}`, values);
+    const { data } = await axios.put(`${API_URL}/tasks/${_id}`, values);
     console.log(values);
     
     return data;
@@ -39,7 +39,7 @@ export const updateTask = async (_id, values) => {
 // Delete task
 export const deleteTask = async (_id) => {
   try {
-    await axios.delete(`${API_URL}/tasksList/${_id}`);
+    await axios.delete(`${API_URL}/tasks/${_id}`);
 
   } catch (error) {
     console.error('Error deleting todo', error);

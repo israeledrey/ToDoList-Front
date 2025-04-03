@@ -1,6 +1,7 @@
 import * as yup from 'yup';
 
 export const taskSchema = yup.object().shape({
+
   name: yup
     .string()
     .required("Task name is required")
@@ -9,7 +10,7 @@ export const taskSchema = yup.object().shape({
 
   subject: yup
     .string()
-    .oneOf(["Work", "leisure", "Studies"], "Invalid subject selected")
+    .oneOf(["Work", "Leisure", "Studies"], "Invalid subject selected")
     .required("Subject is required"),
 
   dayToComplete: yup

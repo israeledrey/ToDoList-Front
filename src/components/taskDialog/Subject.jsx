@@ -8,7 +8,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 const Subject = ({ value, onChange }) => {
   const options = [
     { label: 'Work', id: 1 },
-    { label: 'leisure', id: 2 },
+    { label: 'Leisure', id: 2 },
     { label: 'Studies', id: 3 },
   ];
 
