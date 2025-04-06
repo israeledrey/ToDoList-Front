@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useFetchTasks } from '../hooks/useFetchTasks';
-import { useAtom } from 'jotai';
-import { filteredTasksAtom } from '../atoms/tasksAtoms';
+import { useFilteredTasks } from '../hooks/useFilteredTasks';
 
 import SingleTask from "../components/SingleTask";
 import NavBar from "../components/NavBar";
@@ -29,10 +28,12 @@ const useStyles = makeStyles({
 const TasksList = () => {
 
     const classes = useStyles();
-    const { isLoading, isError } = useFetchTasks();
-    const [filteredTasks] = useAtom(filteredTasksAtom);
+    const { data: tasks = [], isLoading, isError } = useFetchTasks();
+    const filteredTasks = useFilteredTasks(tasks);
     const [showDialog, setShowDialog] = useState(false);
 
+    console.log(filteredTasks);
+    
     const renderTasks = useMemo(() => {
         return filteredTasks.map((task) => (
             <SingleTask key={task._id} task={task} setShowDialog={setShowDialog} />

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Search from "./Search";
 
+import Search from "./Search";
 import NavMenu from "./NavMenu";
 
 import { makeStyles } from "@mui/styles";
@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   },
 });
 
-const NavBar = ({ setFilteredTasks }) => {
+const NavBar = () => {
 
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -58,7 +58,7 @@ const NavBar = ({ setFilteredTasks }) => {
           <Typography variant="h6" component="div" className={classes.title}>
             To Do List
           </Typography>
-          <Search setFilteredTasks={setFilteredTasks} />
+          <Search />
         </Toolbar>
       </AppBar>
     </Box>

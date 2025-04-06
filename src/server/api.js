@@ -16,10 +16,10 @@ export const getAllTasks = async () => {
 // Add new task
 export const addNewTask = async (task) => {
   try {
-    const { data } = await axios.post(`${API_URL}/tasks/createTask`, task);    
+    const { data } = await axios.post(`${API_URL}/tasks/createTask`, task);
     return data;
   } catch (error) {
-    console.error('Error adding todo', error);
+    return { success: false, message: err.response?.data?.message || "Failed to add task" }
   }
 };
 
@@ -28,11 +28,10 @@ export const updateTask = async (_id, values) => {
   try {
     const { data } = await axios.put(`${API_URL}/tasks/${_id}`, values);
     console.log(values);
-    
+
     return data;
   } catch (error) {
-
-    console.error('Error updating todo', error);
+    return { success: false, message: err.response?.data?.message || "Failed to update task" }
   }
 };
 
@@ -42,6 +41,6 @@ export const deleteTask = async (_id) => {
     await axios.delete(`${API_URL}/tasks/${_id}`);
 
   } catch (error) {
-    console.error('Error deleting todo', error);
+    return { success: false, message: err.response?.data?.message || "Failed to delete task" }
   }
 };

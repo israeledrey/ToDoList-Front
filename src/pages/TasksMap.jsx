@@ -1,9 +1,8 @@
 import { useFetchTasks } from '../hooks/useFetchTasks';
-import { useAtom } from "jotai";
-import { filteredTasksAtom } from "../atoms/tasksAtoms";
 
 import MapComponent from "../components/MapComponent";
 import NavBar from "../components/NavBar";
+
 import { makeStyles } from "@mui/styles";
 
 
@@ -35,7 +34,6 @@ const TasksMap = () => {
 
   const { isLoading, isError } = useFetchTasks();
   const classes = useStyles();
-  const setFilteredTasks = useAtom(filteredTasksAtom);
 
   if (isLoading) return <p className={classes.noTasks}>Loading tasks...</p>;
   if (isError) return <p className={classes.noTasks}>Error fetching tasks.</p>;
@@ -43,7 +41,7 @@ const TasksMap = () => {
 
   return (
     <>
-      <NavBar setFilteredTasks={setFilteredTasks} />
+      <NavBar  />
       <div className={classes.mapContainer}>
         <div className={classes.mapWrapper}>
           <MapComponent

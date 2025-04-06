@@ -73,6 +73,12 @@ export const useTaskForm = (task, onClose) => {
             message: error.errors[0],
             severity: "error",
           });
+        } else {          
+          setSnackbar({
+            open: true,
+            message: error.message || "Something went wrong.",
+            severity: "error"
+          });
         }
       }
     },

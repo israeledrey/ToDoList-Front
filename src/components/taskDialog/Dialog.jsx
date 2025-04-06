@@ -5,7 +5,7 @@ import { useTaskForm } from "../../hooks/useTaskForm";
 import PrioritySlider from "./PrioritySlider";
 import DateSelector from "./DateSelector";
 import Subject from "./Subject";
-import Map from './DialogMap';
+import Map from './Map';
 import SnackbarComponent from './SnackbarComponent';
 
 import { makeStyles } from '@mui/styles';
@@ -54,7 +54,7 @@ const useStyles = makeStyles({
 
 const Dialog = ({ showDialog, onClose, task }) => {
   const classes = useStyles();
-  const [isEditing, setIsEditing] = useAtom(isEditingAtom);
+  const [ isEditing ] = useAtom(isEditingAtom);
   const { formik, handleFieldChange, handleValidation, snackbar, setSnackbar } = useTaskForm(task, onClose);
 
   const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false })

@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { useAtom } from 'jotai';
-import { filteredTasksAtom } from '../atoms/tasksAtoms'
+import { useFilteredTasks } from '../hooks/useFilteredTasks'; 
 import { useFetchTasks } from '../hooks/useFetchTasks';
 
 import NavBar from '../components/NavBar';
@@ -25,8 +24,8 @@ const useStyles = makeStyles({
 const TasksTable = () => {
 
   const classes = useStyles();
-  const { isLoading, isError } = useFetchTasks();
-  const [filteredTasks, setFilteredTasks] = useAtom(filteredTasksAtom);
+  const { data: tasks = [], isLoading, isError } = useFetchTasks();
+  const filteredTasks = useFilteredTasks(tasks);
   const [showDialog, setShowDialog] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
@@ -41,7 +40,7 @@ const TasksTable = () => {
 
   return (
     <>
-      <NavBar setFilteredTasks={setFilteredTasks} />
+      <NavBar />
 
       {
         filteredTasks.length ?

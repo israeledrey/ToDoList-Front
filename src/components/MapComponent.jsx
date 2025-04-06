@@ -1,14 +1,12 @@
 import { useEffect, useRef } from "react";
-import { useAtom } from 'jotai';
-import { tasksListAtom } from '../atoms/tasksAtoms';
+import { useFetchTasks } from "../hooks/useFetchTasks";
 
-
+import { fromLonLat } from 'ol/proj';
 import Map from "ol/Map";
 import View from "ol/View";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM";
 import Link from 'ol/interaction/Link';
-import { fromLonLat } from 'ol/proj';
 
 import { Style, Icon } from 'ol/style';
 import { Feature } from 'ol';
@@ -19,7 +17,7 @@ import Point from 'ol/geom/Point';
 
 
 const MapComponent = ({ style, center, zoom, iconUrl, mode, onLocationSelect }) => {
-  const [ tasksList ] = useAtom(tasksListAtom);
+  const { data: tasks = [], isLoading, isError } = useFetchTasks();
   const mapRef = useRef(null);
   const vectorSourceRef = useRef(null);
   const vectorLayerRef = useRef(null);
@@ -77,7 +75,7 @@ const MapComponent = ({ style, center, zoom, iconUrl, mode, onLocationSelect }) 
         vectorSource.addFeature(iconFeature);
 
         if (onLocationSelect) {
-          onLocationSelect(coordinate); 
+          onLocationSelect(coordinate);
         }
       });
     }
@@ -92,7 +90,7 @@ const MapComponent = ({ style, center, zoom, iconUrl, mode, onLocationSelect }) 
 
   useEffect(() => {
     if (mode === "admin") {
-      tasksList.forEach((task) => {
+      tasks.forEach((task) => {
         if (task.location) {
           const iconFeature = new Feature({
             geometry: new Point(task.location),
@@ -112,10 +110,10 @@ const MapComponent = ({ style, center, zoom, iconUrl, mode, onLocationSelect }) 
         }
       });
     }
-  }, [iconUrl, mode, tasksList])
+  }, [iconUrl, mode, tasks])
 
 
-  
+
   return (
     <div ref={mapRef} style={style} />
   )
