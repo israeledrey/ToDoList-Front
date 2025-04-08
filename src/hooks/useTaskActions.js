@@ -10,7 +10,7 @@ export const useTaskActions = () => {
         queryClient.invalidateQueries(['tasks'])
     }
 
-    const handleError = () => {
+    const handleError = (error) => {
         setSnackbar({
             open: true,
             message: error.message || "An error occurred during the operation.",

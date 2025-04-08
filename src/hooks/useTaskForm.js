@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import { isEditingAtom, snackbarAtom } from '../atoms/tasksAtoms';
 import { useTaskActions } from '../hooks/useTaskActions';
 import { taskSchema } from '../validation/TaskSchema';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 
 export const useTaskForm = (task, onClose) => {
@@ -60,7 +60,7 @@ export const useTaskForm = (task, onClose) => {
         }
 
         setSnackbar({
-          open: true,
+          open: false,
           message: result.message,
           severity: result.success ? "success" : "error",
         });
@@ -69,6 +69,7 @@ export const useTaskForm = (task, onClose) => {
           initialValues(values);
           onClose();
         }
+
       } catch (error) {
         if (error.name === "ValidationError") {
           setSnackbar({

@@ -1,8 +1,6 @@
 import customAxios from "./customAxios";
 
 
-
-// Render all tasks to the client
 export const getAllTasks = async () => {
 
   try {
@@ -15,7 +13,6 @@ export const getAllTasks = async () => {
   }
 };
 
-// Add new task
 export const addNewTask = async (task) => {
 
   try {
@@ -27,7 +24,6 @@ export const addNewTask = async (task) => {
   }
 };
 
-// Edit task
 export const updateTask = async (_id, values) => {
 
   try {
@@ -39,7 +35,6 @@ export const updateTask = async (_id, values) => {
   }
 };
 
-// Delete task
 export const deleteTask = async (_id) => {
 
   try {
