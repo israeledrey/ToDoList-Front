@@ -1,7 +1,6 @@
 import { useFetchTasks } from '../hooks/useFetchTasks';
 
 import MapComponent from "../components/MapComponent";
-import NavBar from "../components/NavBar";
 
 import { makeStyles } from "@mui/styles";
 
@@ -32,8 +31,8 @@ const useStyles = makeStyles({
 
 const TasksMap = () => {
 
-  const { isLoading, isError } = useFetchTasks();
   const classes = useStyles();
+  const { isLoading, isError } = useFetchTasks();
 
   if (isLoading) return <p className={classes.noTasks}>Loading tasks...</p>;
   if (isError) return <p className={classes.noTasks}>Error fetching tasks.</p>;
@@ -41,7 +40,6 @@ const TasksMap = () => {
 
   return (
     <>
-      <NavBar  />
       <div className={classes.mapContainer}>
         <div className={classes.mapWrapper}>
           <MapComponent

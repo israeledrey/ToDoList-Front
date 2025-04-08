@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { useFilteredTasks } from '../hooks/useFilteredTasks'; 
+import { useState, useMemo } from 'react';
+import { useFilteredTasks } from '../hooks/useFilteredTasks';
 import { useFetchTasks } from '../hooks/useFetchTasks';
 
-import NavBar from '../components/NavBar';
 import Container from '../components/table/Container'
 import Dialog from '../components/taskDialog/Dialog';
 import AddTask from '../components/taskAction/AddTask';
+import SnackbarComponent from '../components/taskDialog/SnackbarComponent';
 
 import { makeStyles } from '@mui/styles';
 
@@ -24,32 +24,43 @@ const useStyles = makeStyles({
 const TasksTable = () => {
 
   const classes = useStyles();
-  const { data: tasks = [], isLoading, isError } = useFetchTasks();
+  const { tasks, isLoading, isError, setSnackbar, snackbar } = useFetchTasks();
+  
   const filteredTasks = useFilteredTasks(tasks);
   const [showDialog, setShowDialog] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+
+
+  const renderTable = useMemo(() => {
+
+    if (isLoading) return <p className={classes.noTasks}>Loading tasks...</p>;
+    if (isError) return <p className={classes.noTasks}>Error fetching tasks.</p>;
+    if (!filteredTasks) return <p className={classes.noTasks}>No tasks found.</p>;
+
+
+    return (
+      <Container
+        tasks={filteredTasks}
+        setShowDialog={setShowDialog}
+        setSelectedTask={setSelectedTask}
+      />
+    );
+  }, [filteredTasks, setShowDialog, setSelectedTask, classes.noTasks]);
 
 
   const closePopup = () => {
     setShowDialog(false);
   };
 
-  if (isLoading) return <p className={classes.noTasks}>Loading tasks...</p>;
-  if (isError) return <p className={classes.noTasks}>Error fetching tasks.</p>;
+  const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false })
 
 
   return (
     <>
-      <NavBar />
-
-      {
-        filteredTasks.length ?
-          <Container tasks={filteredTasks} setShowDialog={setShowDialog} setSelectedTask={setSelectedTask} />
-          :
-          <p className={classes.noTasks}>No tasks found.</p>
-      }
+      <div>{renderTable}</div>
 
       <AddTask setShowDialog={setShowDialog} />
+      <SnackbarComponent snackbar={snackbar} handleCloseSnackbar={handleCloseSnackbar} />
       {showDialog && <Dialog showDialog={showDialog} task={selectedTask} onClose={closePopup} />}
     </>
   );

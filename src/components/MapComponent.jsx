@@ -17,7 +17,9 @@ import Point from 'ol/geom/Point';
 
 
 const MapComponent = ({ style, center, zoom, iconUrl, mode, onLocationSelect }) => {
-  const { data: tasks = [], isLoading, isError } = useFetchTasks();
+  const { tasks } = useFetchTasks();
+
+  const tasksArray = Object.values(tasks);
   const mapRef = useRef(null);
   const vectorSourceRef = useRef(null);
   const vectorLayerRef = useRef(null);
@@ -90,7 +92,7 @@ const MapComponent = ({ style, center, zoom, iconUrl, mode, onLocationSelect }) 
 
   useEffect(() => {
     if (mode === "admin") {
-      tasks.forEach((task) => {
+      tasksArray.forEach((task) => {
         if (task.location) {
           const iconFeature = new Feature({
             geometry: new Point(task.location),
@@ -110,7 +112,7 @@ const MapComponent = ({ style, center, zoom, iconUrl, mode, onLocationSelect }) 
         }
       });
     }
-  }, [iconUrl, mode, tasks])
+  }, [iconUrl, mode, tasksArray])
 
 
 

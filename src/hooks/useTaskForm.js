@@ -1,14 +1,17 @@
 import { useFormik } from 'formik';
 import { useAtom } from 'jotai';
-import { isEditingAtom } from '../atoms/tasksAtoms';
+import { isEditingAtom, snackbarAtom } from '../atoms/tasksAtoms';
 import { useTaskActions } from '../hooks/useTaskActions';
 import { taskSchema } from '../validation/TaskSchema';
 import { useState, useEffect } from 'react';
 
+
 export const useTaskForm = (task, onClose) => {
+
   const [isEditing] = useAtom(isEditingAtom);
   const { handleAddTask, handleEditTask } = useTaskActions();
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [snackbar, setSnackbar] = useAtom(snackbarAtom);
+
 
   const handleFieldChange = (field) => (value) => {
     if (field === 'completed') {
@@ -73,7 +76,7 @@ export const useTaskForm = (task, onClose) => {
             message: error.errors[0],
             severity: "error",
           });
-        } else {          
+        } else {
           setSnackbar({
             open: true,
             message: error.message || "Something went wrong.",

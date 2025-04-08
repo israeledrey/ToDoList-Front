@@ -1,5 +1,6 @@
 import { useAtom } from 'jotai';
 import { searchInputAtom } from '../atoms/tasksAtoms';
+import { useFilteredTasks } from '../hooks/useFilteredTasks';
 
 import { makeStyles } from '@mui/styles';
 import { InputBase } from '@mui/material';
@@ -52,7 +53,7 @@ const Search = () => {
     const [searchInput, setSearchInput] = useAtom(searchInputAtom);
 
     const onChange = (event) => {
-        setSearchInput(event.target.value);
+        setSearchInput(event.target.value);        
     };
 
       

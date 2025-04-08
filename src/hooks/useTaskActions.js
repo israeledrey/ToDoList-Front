@@ -1,37 +1,40 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addNewTask, updateTask, deleteTask } from '../server/api';
-import { taskSchema } from '../validation/TaskSchema';
 
 
 
 export const useTaskActions = () => {
     const queryClient = useQueryClient();
 
+    const handleSuccess = () => {
+        queryClient.invalidateQueries(['tasks'])
+    }
+
+    const handleError = () => {
+        setSnackbar({
+            open: true,
+            message: error.message || "An error occurred during the operation.",
+            severity: 'error',
+        });
+    }
+
+
     const addTaskMutation = useMutation({
-        mutationFn: async (values) => {
-            await taskSchema.validate(values);
-            return addNewTask(values);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(['tasks']);
-        },
+        mutationFn: addNewTask,
+        onSuccess: handleSuccess,
+        onError: handleError,
     });
 
     const editTaskMutation = useMutation({
-        mutationFn: async ({ id, values }) => {
-            await taskSchema.validate(values);
-            return updateTask(id, values);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(['tasks']);
-        },
+        mutationFn: updateTask,
+        onSuccess: handleSuccess,
+        onError: handleError,
     });
 
     const deleteTaskMutation = useMutation({
         mutationFn: deleteTask,
-        onSuccess: () => {
-            queryClient.invalidateQueries(['tasks']);
-        },
+        onSuccess: handleSuccess,
+        onError: handleError,
     });
 
     return {
