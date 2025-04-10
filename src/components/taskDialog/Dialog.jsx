@@ -5,7 +5,8 @@ import { useTaskForm } from "../../hooks/useTaskForm";
 import PrioritySlider from "./PrioritySlider";
 import DateSelector from "./DateSelector";
 import Subject from "./Subject";
-import Map from './Map';
+import BaseMap from "../Map/BaseMap";
+import UserLocationLayer from "../Map/UserLocationLayer";
 import SnackbarComponent from './SnackbarComponent';
 
 import { makeStyles } from '@mui/styles';
@@ -48,13 +49,18 @@ const useStyles = makeStyles({
     display: 'grid',
     gridTemplateColumns: 'repeat(2, minmax(80px, 1fr))',
     gap: 1.5,
+  },
+  map: {
+    width: '100%',
+    height: '200px',
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
   }
 });
 
 
 const Dialog = ({ showDialog, onClose, task }) => {
   const classes = useStyles();
-  const [ isEditing ] = useAtom(isEditingAtom);
+  const [isEditing] = useAtom(isEditingAtom);
   const { formik, handleFieldChange, handleValidation, snackbar, setSnackbar } = useTaskForm(task, onClose);
 
   const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false })
@@ -111,11 +117,17 @@ const Dialog = ({ showDialog, onClose, task }) => {
             onBlur={handleValidation('completed')}
           />
 
-          <Map
-            onLocationSelect={handleFieldChange('location')}
-            onBlur={handleValidation('location')}
-          />
-
+          <BaseMap className={classes.map} center={[-118.2437, 34.0522]} zoom={14}>
+            {(map) => (
+              <UserLocationLayer
+                map={map}
+                iconUrl="https://www.svgrepo.com/show/3322/duck.svg"
+                onLocationSelect={handleFieldChange('location')}
+                onBlur={handleValidation('location')}
+              />
+            )}
+          </BaseMap>
+          
           <CardActions sx={{ gridColumn: '1/-1' }}>
             <Button variant="solid" color="primary" onClick={formik.handleSubmit}>
               {isEditing ? "Save Changes" : "Add Task"}

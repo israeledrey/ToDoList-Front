@@ -1,7 +1,7 @@
 import { useFetchTasks } from '../hooks/useFetchTasks';
 
-import MapComponent from "../components/MapComponent";
-
+import BaseMap from '../components/Map/BaseMap';
+import TasksLayer from '../components/Map/TasksLayer';
 import { makeStyles } from "@mui/styles";
 
 
@@ -13,10 +13,10 @@ const useStyles = makeStyles({
     alignItems: "center",
     height: "100vh",
   },
-  mapWrapper: {
-    width: "80vw",
+  BaseMap: {
+    width: "95vw",
     height: "80vh",
-    borderRadius: "15px",
+    borderRadius: "10px",
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
     overflow: "hidden",
   },
@@ -32,25 +32,18 @@ const useStyles = makeStyles({
 const TasksMap = () => {
 
   const classes = useStyles();
-  const { isLoading, isError } = useFetchTasks();
-
+  const { tasks, isLoading, isError } = useFetchTasks();
+  const iconUrl = "https://www.svgrepo.com/show/3322/duck.svg";
   if (isLoading) return <p className={classes.noTasks}>Loading tasks...</p>;
   if (isError) return <p className={classes.noTasks}>Error fetching tasks.</p>;
 
 
   return (
-    <>
-      <div className={classes.mapContainer}>
-        <div className={classes.mapWrapper}>
-          <MapComponent
-            style={{ width: "80vw", height: "80vh" }}
-            zoom={10} center={[-118.2437, 34.0522]}
-            iconUrl={"https://www.svgrepo.com/show/3322/duck.svg"}
-            mode={"admin"}
-          />
-        </div>
-      </div>
-    </>
+    <div className={classes.mapContainer}>
+      <BaseMap className={classes.BaseMap} center={[-118.2437, 34.0522]} zoom={12}>
+        {(map) => <TasksLayer map={map} tasks={Object.values(tasks)} iconUrl={iconUrl} />}
+      </BaseMap>
+    </div>
 
   );
 };

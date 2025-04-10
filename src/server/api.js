@@ -2,7 +2,6 @@ import customAxios from "./customAxios";
 
 
 export const getAllTasks = async () => {
-
   try {
     const { data } = await customAxios.get(`/tasks`);
     return data;
@@ -14,7 +13,6 @@ export const getAllTasks = async () => {
 };
 
 export const addNewTask = async (task) => {
-
   try {
     const { data } = await customAxios.post(`/tasks/createTask`, task);
     return data;
@@ -25,7 +23,6 @@ export const addNewTask = async (task) => {
 };
 
 export const updateTask = async (_id, values) => {
-
   try {
     const { data } = await customAxios.put(`/tasks/${_id}`, values);
     return data;
@@ -36,7 +33,6 @@ export const updateTask = async (_id, values) => {
 };
 
 export const deleteTask = async (_id) => {
-
   try {
     const { data } = await customAxios.delete(`/tasks/${_id}`);
     return data;
