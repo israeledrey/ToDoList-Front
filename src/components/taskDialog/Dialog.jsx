@@ -1,12 +1,12 @@
 import { useAtom } from "jotai";
-import { isEditingAtom } from "../../atoms/tasksAtoms";
+import { isEditingAtom, mapInstanceAtom } from "../../atoms/tasksAtoms";
 import { useTaskForm } from "../../hooks/useTaskForm";
 
 import PrioritySlider from "./PrioritySlider";
 import DateSelector from "./DateSelector";
 import Subject from "./Subject";
-import BaseMap from "../Map/BaseMap";
-import UserLocationLayer from "../Map/UserLocationLayer";
+import BaseMap from "../map/BaseMap";
+import UserLocationLayer from "../map/UserLocationLayer";
 import SnackbarComponent from './SnackbarComponent';
 
 import { makeStyles } from '@mui/styles';
@@ -61,6 +61,7 @@ const useStyles = makeStyles({
 const Dialog = ({ showDialog, onClose, task }) => {
   const classes = useStyles();
   const [isEditing] = useAtom(isEditingAtom);
+  const [mapInstance] = useAtom(mapInstanceAtom);
   const { formik, handleFieldChange, handleValidation, snackbar, setSnackbar } = useTaskForm(task, onClose);
 
   const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false })
@@ -118,16 +119,14 @@ const Dialog = ({ showDialog, onClose, task }) => {
           />
 
           <BaseMap className={classes.map} center={[-118.2437, 34.0522]} zoom={14}>
-            {(map) => (
               <UserLocationLayer
-                map={map}
+                mapInstance={mapInstance}
                 iconUrl="https://www.svgrepo.com/show/3322/duck.svg"
                 onLocationSelect={handleFieldChange('location')}
                 onBlur={handleValidation('location')}
               />
-            )}
           </BaseMap>
-          
+
           <CardActions sx={{ gridColumn: '1/-1' }}>
             <Button variant="solid" color="primary" onClick={formik.handleSubmit}>
               {isEditing ? "Save Changes" : "Add Task"}

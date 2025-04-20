@@ -1,7 +1,11 @@
 import { useFetchTasks } from '../hooks/useFetchTasks';
 
-import BaseMap from '../components/Map/BaseMap';
-import TasksLayer from '../components/Map/TasksLayer';
+import { useAtom } from 'jotai';
+import { mapInstanceAtom } from '../atoms/tasksAtoms';
+
+import BaseMap from '../components/map/BaseMap';
+import TasksLayer from '../components/map/TasksLayer';
+
 import { makeStyles } from "@mui/styles";
 
 
@@ -33,6 +37,8 @@ const TasksMap = () => {
 
   const classes = useStyles();
   const { tasks, isLoading, isError } = useFetchTasks();
+  const [mapInstance] = useAtom(mapInstanceAtom);
+
   const iconUrl = "https://www.svgrepo.com/show/3322/duck.svg";
   if (isLoading) return <p className={classes.noTasks}>Loading tasks...</p>;
   if (isError) return <p className={classes.noTasks}>Error fetching tasks.</p>;
@@ -41,7 +47,7 @@ const TasksMap = () => {
   return (
     <div className={classes.mapContainer}>
       <BaseMap className={classes.BaseMap} center={[-118.2437, 34.0522]} zoom={12}>
-        {(map) => <TasksLayer map={map} tasks={Object.values(tasks)} iconUrl={iconUrl} />}
+        <TasksLayer mapInstance={mapInstance} tasks={Object.values(tasks)} iconUrl={iconUrl} />
       </BaseMap>
     </div>
 

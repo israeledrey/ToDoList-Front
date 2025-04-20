@@ -1,13 +1,17 @@
 import { useEffect } from 'react';
+
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
 import { Feature } from 'ol';
-import Point from 'ol/geom/Point';
 import { Icon, Style } from 'ol/style';
+import Point from 'ol/geom/Point';
+
 
 
 
 const UserLocationLayer = ({ map, iconUrl, onLocationSelect }) => {
+
+    
     useEffect(() => {
         if (!map) return;        
 

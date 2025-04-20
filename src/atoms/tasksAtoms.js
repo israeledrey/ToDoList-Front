@@ -8,5 +8,7 @@ export const searchInputAtom = atom("");
 
 export const snackbarAtom = atom({ open: false, message: '', severity: 'success' });
 
+export const mapInstanceAtom = atom(null);
+
 
 
