@@ -14,18 +14,22 @@ export const useTaskForm = (task, onClose) => {
 
 
   const handleFieldChange = (field) => (value) => {
+
     if (field === 'completed') {
-      formik.setFieldValue(field, value.target.checked);
-    } else if (field === 'priority') {
-      formik.setFieldValue(field, `${value}%`);
-    } else if (field === 'location' || field === 'dayToComplete') {
-      formik.setFieldValue(field, value);
-    } else {
-      formik.setFieldValue(field, value.target ? value.target.value : value);
+      return formik.setFieldValue(field, value.target.checked);
     }
+    if (field === 'priority') {
+      return formik.setFieldValue(field, `${value}%`);
+    }
+    if (field === 'location' || field === 'dayToComplete') {
+      return formik.setFieldValue(field, value);
+    }
+    formik.setFieldValue(field, value.target ? value.target.value : value);
   };
 
+
   const handleValidation = (field) => async () => {
+    
     formik.setFieldTouched(field, true, true);
     try {
       await taskSchema.validateAt(field, formik.values);

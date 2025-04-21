@@ -1,12 +1,12 @@
 import { useAtom } from "jotai";
-import { isEditingAtom, mapInstanceAtom } from "../../atoms/tasksAtoms";
+import { isEditingAtom } from "../../atoms/tasksAtoms";
 import { useTaskForm } from "../../hooks/useTaskForm";
 
 import PrioritySlider from "./PrioritySlider";
 import DateSelector from "./DateSelector";
 import Subject from "./Subject";
 import BaseMap from "../map/BaseMap";
-import UserLocationLayer from "../map/UserLocationLayer";
+import UserLocationLayer from "../Map/UserLocationLayer";
 import SnackbarComponent from './SnackbarComponent';
 
 import { makeStyles } from '@mui/styles';
@@ -61,9 +61,9 @@ const useStyles = makeStyles({
 const Dialog = ({ showDialog, onClose, task }) => {
   const classes = useStyles();
   const [isEditing] = useAtom(isEditingAtom);
-  const [mapInstance] = useAtom(mapInstanceAtom);
   const { formik, handleFieldChange, handleValidation, snackbar, setSnackbar } = useTaskForm(task, onClose);
 
+  const center = [-118.2437, 34.0522];
   const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false })
 
 
@@ -118,10 +118,8 @@ const Dialog = ({ showDialog, onClose, task }) => {
             onBlur={handleValidation('completed')}
           />
 
-          <BaseMap className={classes.map} center={[-118.2437, 34.0522]} zoom={14}>
+          <BaseMap className={classes.map} center={center} zoom={14}>
               <UserLocationLayer
-                mapInstance={mapInstance}
-                iconUrl="https://www.svgrepo.com/show/3322/duck.svg"
                 onLocationSelect={handleFieldChange('location')}
                 onBlur={handleValidation('location')}
               />

@@ -1,23 +1,29 @@
 import { useEffect } from 'react';
 
+import { useAtom } from 'jotai';
+import { mapInstanceAtom } from '../../atoms/tasksAtoms';
+
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 
 
-const BaseTileLayer = ({ map }) => {
+const BaseTileLayer = () => {
+
+  const [mapInstance] = useAtom(mapInstanceAtom);
+
   useEffect(() => {
-    if (!map) return;
+    if (!mapInstance) return;
 
     const tileLayer = new TileLayer({
       source: new OSM({ attributions: null }),
     });
 
-    map.addLayer(tileLayer);
+    mapInstance.addLayer(tileLayer);
 
     return () => {
-      map.removeLayer(tileLayer);
+      mapInstance.removeLayer(tileLayer);
     };
-  }, [map]);
+  }, [mapInstance]);
 
   return null;
 };

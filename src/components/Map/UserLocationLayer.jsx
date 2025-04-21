@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
 
+import { useAtom } from 'jotai';
+import { mapInstanceAtom } from '../../atoms/tasksAtoms';
+
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
 import { Feature } from 'ol';
@@ -9,16 +12,18 @@ import Point from 'ol/geom/Point';
 
 
 
-const UserLocationLayer = ({ map, iconUrl, onLocationSelect }) => {
+const UserLocationLayer = ({ onLocationSelect }) => {
 
+    const [mapInstance] = useAtom(mapInstanceAtom);
     
     useEffect(() => {
-        if (!map) return;        
+        if (!mapInstance) return;        
 
         const vectorSource = new VectorSource();
         const vectorLayer = new VectorLayer({ source: vectorSource });
+        const iconUrl="https://www.svgrepo.com/show/3322/duck.svg"
 
-        map.addLayer(vectorLayer);
+        mapInstance.addLayer(vectorLayer);
 
         const handleClick = (event) => {
             const coordinate = event.coordinate;
@@ -43,10 +48,10 @@ const UserLocationLayer = ({ map, iconUrl, onLocationSelect }) => {
 
         };
 
-        map.on('click', handleClick);
+        mapInstance.on('click', handleClick);
 
         
-    }, [map, onLocationSelect]);
+    }, [mapInstance, onLocationSelect]);
 
     return null;
 };

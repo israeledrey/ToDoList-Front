@@ -7,7 +7,7 @@ export const getAllTasks = async () => {
     return data;
 
   } catch (error) {
-    console.error('Error fetching todos', error);
+    console.error('Error fetching tasks', error);
     throw error; 
   }
 };
