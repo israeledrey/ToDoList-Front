@@ -56,7 +56,7 @@ export const useTaskForm = (task, onClose) => {
         await taskSchema.validate(values, { abortEarly: false });
         let result;
         if (isEditing) {
-          result = await handleEditTask({ id: task._id, values });
+          result = await handleEditTask( values );
           onClose();
         } else {
           result = await handleAddTask(values);

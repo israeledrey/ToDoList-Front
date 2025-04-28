@@ -22,9 +22,11 @@ export const addNewTask = async (task) => {
   }
 };
 
-export const updateTask = async (_id, values) => {
+export const updateTask = async (values) => {
+  const { _id , ...restValues} = values;
+  
   try {
-    const { data } = await customAxios.put(`/tasks/${_id}`, values);
+    const { data } = await customAxios.put(`/tasks/${_id}`, restValues);
     return data;
 
   } catch (error) {
