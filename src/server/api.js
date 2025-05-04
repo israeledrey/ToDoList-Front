@@ -8,7 +8,7 @@ export const getAllTasks = async () => {
 
   } catch (error) {
     console.error('Error fetching tasks', error);
-    throw error; 
+    throw error;
   }
 };
 
@@ -23,8 +23,8 @@ export const addNewTask = async (task) => {
 };
 
 export const updateTask = async (values) => {
-  const { _id , ...restValues} = values;
-  
+  const { _id, ...restValues } = values;
+
   try {
     const { data } = await customAxios.put(`/tasks/${_id}`, restValues);
     return data;
@@ -43,3 +43,13 @@ export const deleteTask = async (_id) => {
     return { success: false, message: error.response?.data?.message || "Failed to delete task" }
   }
 };
+
+export const filteredTask = async (name) => {
+  try {
+    const { data } = await customAxios.get(`/tasks/filter?name=${encodeURIComponent(name)}`);
+    return data;
+
+  } catch {
+    return [];
+  }
+}

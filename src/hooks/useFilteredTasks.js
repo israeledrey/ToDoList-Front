@@ -1,15 +1,23 @@
 import { useAtom } from "jotai";
 import { useDebounce } from 'use-debounce';
-import {  searchInputAtom } from "../atoms/tasksAtoms";
+import { useQuery } from '@tanstack/react-query';
+import { searchInputAtom } from "../atoms/tasksAtoms";
+import { filteredTask } from "../server/api";
 
-export const useFilteredTasks = (tasks) => {
+export const useFilteredTasks = (tasks = {}) => {
     const [searchInput] = useAtom(searchInputAtom);
-    const [debounceValue] = useDebounce(searchInput, 1000);
-    const tasksArray = Object.values(tasks);
+    const [debouncedValue] = useDebounce(searchInput, 500);
 
-    if (!debounceValue.trim()) return tasksArray;
+    const isSearchEmpty = !debouncedValue.trim();
 
-    return tasksArray.filter((task) =>
-        task.name.toLowerCase().includes(debounceValue.toLowerCase())
-    );
+    const { data = [], isLoading } = useQuery({
+        queryKey: ['filteredTasks', debouncedValue],
+        queryFn: () => filteredTask(debouncedValue),
+        enabled: !isSearchEmpty, 
+    });
+
+    return {
+        tasks: isSearchEmpty ? Object.values(tasks) : data,
+        isLoading: isSearchEmpty ? false : isLoading,
+    };
 };

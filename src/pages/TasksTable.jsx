@@ -25,8 +25,8 @@ const TasksTable = () => {
 
   const classes = useStyles();
   const { tasks, isLoading, isError, setSnackbar, snackbar } = useFetchTasks();
-  
-  const filteredTasks = useFilteredTasks(tasks);
+  const { tasks: filteredTasks, isLoading: isFilteredLoading } = useFilteredTasks(tasks);
+
   const [showDialog, setShowDialog] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
@@ -45,7 +45,7 @@ const TasksTable = () => {
         setSelectedTask={setSelectedTask}
       />
     );
-  }, [filteredTasks, setShowDialog, setSelectedTask, classes.noTasks]);
+  }, [filteredTasks, isFilteredLoading, setShowDialog, setSelectedTask, classes.noTasks]);
 
 
   const closePopup = () => {
