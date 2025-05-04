@@ -10,8 +10,8 @@ const EditTask = ({ setSelectedTask, setShowDialog, task }) => {
 
     const [, setIsEditing] = useAtom(isEditingAtom);
 
-    const handleShowEditTask = (event) => {
-        setSelectedTask(task);
+    const handleShowEditDialog = (event) => {
+        setSelectedTask(task);        
         setShowDialog(true);
         setIsEditing(true);
         event.stopPropagation();
@@ -21,7 +21,7 @@ const EditTask = ({ setSelectedTask, setShowDialog, task }) => {
         <IconButton
             edge="end"
             aria-label="edit"
-            onClick={handleShowEditTask}
+            onClick={handleShowEditDialog}
         >
             <CreateIcon />
         </IconButton>

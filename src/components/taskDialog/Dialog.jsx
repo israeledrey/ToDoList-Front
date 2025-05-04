@@ -104,7 +104,7 @@ const Dialog = ({ showDialog, onClose, task }) => {
           </FormControl>
 
           <PrioritySlider
-            value={parseInt(formik.values.priority)}
+            value={formik.values.priority}
             getAriaValueText={(value) => `${value}%`}
             onChange={handleFieldChange('priority')}
             onBlur={handleValidation('priority')}
@@ -119,10 +119,11 @@ const Dialog = ({ showDialog, onClose, task }) => {
           />
 
           <BaseMap className={classes.map} center={center} zoom={14}>
-              <UserLocationLayer
-                onLocationSelect={handleFieldChange('location')}
-                onBlur={handleValidation('location')}
-              />
+            <UserLocationLayer
+              value={formik.values.location}
+              onLocationSelect={handleFieldChange('location')}
+              onBlur={handleValidation('location')}
+            />
           </BaseMap>
 
           <CardActions sx={{ gridColumn: '1/-1' }}>

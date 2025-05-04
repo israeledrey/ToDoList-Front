@@ -12,18 +12,37 @@ import Point from 'ol/geom/Point';
 
 
 
-const UserLocationLayer = ({ onLocationSelect }) => {
+const UserLocationLayer = ({ value, onLocationSelect }) => {
 
     const [mapInstance] = useAtom(mapInstanceAtom);
-    
+
     useEffect(() => {
-        if (!mapInstance) return;        
+        if (!mapInstance) return;
 
         const vectorSource = new VectorSource();
         const vectorLayer = new VectorLayer({ source: vectorSource });
-        const iconUrl="https://www.svgrepo.com/show/3322/duck.svg"
+        const iconUrl = "https://www.svgrepo.com/show/3322/duck.svg"
 
         mapInstance.addLayer(vectorLayer);
+
+        if (value) {
+            const feature = new Feature({
+                geometry: new Point(value),
+            });
+
+            feature.setStyle(
+                new Style({
+                    image: new Icon({
+                        anchor: [0.5, 1],
+                        scale: 0.04,
+                        src: iconUrl,
+                    }),
+                })
+            );
+
+            vectorSource.addFeature(feature);
+        }
+
 
         const handleClick = (event) => {
             const coordinate = event.coordinate;
@@ -50,8 +69,8 @@ const UserLocationLayer = ({ onLocationSelect }) => {
 
         mapInstance.on('click', handleClick);
 
-        
-    }, [mapInstance, onLocationSelect]);
+
+    }, [mapInstance, onLocationSelect, value]);
 
     return null;
 };

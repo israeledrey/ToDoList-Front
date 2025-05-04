@@ -50,21 +50,22 @@ const PrettoSlider = styled(Slider)({
 
 
 
-const PrioritySlider = ({onChange}) => {
+const PrioritySlider = ({ value, onChange }) => {
 
     const handlePriorityChange = (event, newValue) => {
-        onChange(newValue);  
+        onChange(newValue);
     };
-    
+
     return (
         <Box sx={{ width: 320 }}>
 
             <Typography gutterBottom>Priority</Typography>
             <PrettoSlider
+                value={parseInt(value)}
                 valueLabelDisplay="auto"
                 aria-label="pretto slider"
                 defaultValue={20}
-                onChange={handlePriorityChange}  
+                onChange={handlePriorityChange}
             />
         </Box>
     );

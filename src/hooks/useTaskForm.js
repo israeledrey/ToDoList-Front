@@ -24,7 +24,7 @@ export const useTaskForm = (task, onClose) => {
     if (field === 'location' || field === 'dayToComplete') {
       return formik.setFieldValue(field, value);
     }
-    formik.setFieldValue(field, value.target ? value.target.value : value);
+    formik.setFieldValue(field, value.target ? value.target.value : value);    
   };
 
 
@@ -43,7 +43,7 @@ export const useTaskForm = (task, onClose) => {
   };
 
   const formik = useFormik({
-    initialValues: {
+    initialValues: {      
       name: "",
       subject: "",
       dayToComplete: "",
@@ -51,12 +51,14 @@ export const useTaskForm = (task, onClose) => {
       completed: false,
       location: [null, null]
     },
+    enableReinitialize: true,
     onSubmit: async (values) => {
       try {
         await taskSchema.validate(values, { abortEarly: false });
+        
         let result;
         if (isEditing) {
-          result = await handleEditTask( values );
+          result = await handleEditTask(values);
           onClose();
         } else {
           result = await handleAddTask(values);
