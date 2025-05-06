@@ -1,16 +1,19 @@
 import { useFormik } from 'formik';
 import { useAtom } from 'jotai';
-import { isEditingAtom, snackbarAtom } from '../atoms/tasksAtoms';
-import { useTaskActions } from '../hooks/useTaskActions';
+import { currentTaskAtom, isEditingAtom, snackbarAtom } from '../atoms/tasksAtoms';
+import { useTaskActions } from './useTaskActions';
 import { taskSchema } from '../validation/TaskSchema';
+import geoJSON from '../utils/DataType';
 import { useEffect } from 'react';
 
 
 export const useTaskForm = (task, onClose) => {
 
   const [isEditing] = useAtom(isEditingAtom);
+  const [, setCurrentTask] = useAtom(currentTaskAtom);
   const { handleAddTask, handleEditTask } = useTaskActions();
   const [snackbar, setSnackbar] = useAtom(snackbarAtom);
+  const { createGeoJSON } = geoJSON();
 
 
   const handleFieldChange = (field) => (value) => {
@@ -21,15 +24,16 @@ export const useTaskForm = (task, onClose) => {
     if (field === 'priority') {
       return formik.setFieldValue(field, `${value}%`);
     }
-    if (field === 'location' || field === 'dayToComplete') {
-      return formik.setFieldValue(field, value);
+    if (field === 'location') {
+      const geoJson = createGeoJSON(value);
+      return formik.setFieldValue('location', geoJson);
     }
-    formik.setFieldValue(field, value.target ? value.target.value : value);    
+    formik.setFieldValue(field, value.target ? value.target.value : value);
   };
 
 
   const handleValidation = (field) => async () => {
-    
+
     formik.setFieldTouched(field, true, true);
     try {
       await taskSchema.validateAt(field, formik.values);
@@ -42,26 +46,32 @@ export const useTaskForm = (task, onClose) => {
     }
   };
 
+  const initialGeoJSON = createGeoJSON([null, null]);
+
   const formik = useFormik({
-    initialValues: {      
+
+    initialValues: {
       name: "",
       subject: "",
       dayToComplete: "",
       priority: `${20}%`,
       completed: false,
-      location: [null, null]
+      location: initialGeoJSON
     },
+
     enableReinitialize: true,
     onSubmit: async (values) => {
       try {
         await taskSchema.validate(values, { abortEarly: false });
-        
+
         let result;
         if (isEditing) {
           result = await handleEditTask(values);
+          setCurrentTask(values);
           onClose();
         } else {
           result = await handleAddTask(values);
+          setCurrentTask(values);
           onClose();
         }
 

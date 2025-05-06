@@ -6,13 +6,12 @@ import { mapInstanceAtom } from '../../atoms/tasksAtoms';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
 import { Feature } from 'ol';
-import { Icon, Style } from 'ol/style';
 import Point from 'ol/geom/Point';
 
 
 
 
-const UserLocationLayer = ({ value, onLocationSelect }) => {
+const UserLocationLayer = ({ value, onLocationSelect, style }) => {
 
     const [mapInstance] = useAtom(mapInstanceAtom);
 
@@ -21,7 +20,6 @@ const UserLocationLayer = ({ value, onLocationSelect }) => {
 
         const vectorSource = new VectorSource();
         const vectorLayer = new VectorLayer({ source: vectorSource });
-        const iconUrl = "https://www.svgrepo.com/show/3322/duck.svg"
 
         mapInstance.addLayer(vectorLayer);
 
@@ -30,16 +28,7 @@ const UserLocationLayer = ({ value, onLocationSelect }) => {
                 geometry: new Point(value),
             });
 
-            feature.setStyle(
-                new Style({
-                    image: new Icon({
-                        anchor: [0.5, 1],
-                        scale: 0.04,
-                        src: iconUrl,
-                    }),
-                })
-            );
-
+            feature.setStyle(style);
             vectorSource.addFeature(feature);
         }
 
@@ -52,15 +41,7 @@ const UserLocationLayer = ({ value, onLocationSelect }) => {
                 geometry: new Point(coordinate),
             });
 
-            feature.setStyle(
-                new Style({
-                    image: new Icon({
-                        anchor: [0.5, 1],
-                        scale: 0.04,
-                        src: iconUrl,
-                    }),
-                })
-            );
+            feature.setStyle(style);
 
             vectorSource.addFeature(feature);
             onLocationSelect?.(coordinate);

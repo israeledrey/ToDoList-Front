@@ -1,50 +1,46 @@
 import { useEffect } from 'react';
-
 import { useAtom } from 'jotai';
 import { mapInstanceAtom } from '../../atoms/tasksAtoms';
 
-import DataType from '../../utils/DataType';
+import geoJSON from '../../utils/DataType';
 
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
 import { Feature } from 'ol';
 import Point from 'ol/geom/Point';
-import { Icon, Style } from 'ol/style';
 
-const TasksLayer = ({ tasks }) => {
+
+const TasksLayer = ({ tasks, style }) => {
 
   const [mapInstance] = useAtom(mapInstanceAtom);
+  const { createGeoJSON, getGeoJsonType } = geoJSON();
 
   useEffect(() => {
     if (!mapInstance || !tasks) return;
 
     const vectorSource = new VectorSource();
     const vectorLayer = new VectorLayer({ source: vectorSource });
-    const iconUrl = "https://www.svgrepo.com/show/3322/duck.svg";
 
     tasks.forEach(task => {
       if (!task || !task.location) return;
 
-      const type = DataType(task.location);
-      
-        let geometry;
-        let style;
+      const geoJson = task.location;
+      const type = getGeoJsonType(geoJson);
+      const coordinates = task.location.features[0]?.geometry?.coordinates;
 
-        switch (type) {
-          case 'point':
-            geometry = new Point(task.location);
-              style = new Style({
-                image: new Icon({
-                  anchor: [0.5, 1],
-                  scale: 0.04,
-                  src: iconUrl,
-                }),
-              });
-            break;
+      let geometry;
+      let customStyle;
 
-          default:
-            return;
-        }
+      switch (type) {
+        case 'point':
+          geometry = new Point(coordinates);
+          customStyle = style;
+          break;
+
+        default:
+          console.warn("Unsupported geometry type or invalid GeoJSON:", geoJson);
+          return;
+      }
 
       const feature = new Feature({ geometry });
       feature.setStyle(style);

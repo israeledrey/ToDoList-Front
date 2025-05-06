@@ -45,7 +45,7 @@ const TasksTable = () => {
         setSelectedTask={setSelectedTask}
       />
     );
-  }, [filteredTasks, isFilteredLoading, setShowDialog, setSelectedTask, classes.noTasks]);
+  }, [filteredTasks, isLoading, isError, classes.noTasks]);
 
 
   const closePopup = () => {

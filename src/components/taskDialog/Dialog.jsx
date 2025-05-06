@@ -22,6 +22,8 @@ import Typography from '@mui/joy/Typography';
 import Button from '@mui/joy/Button';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import Backdrop from '@mui/material/Backdrop';
+import { Icon, Style } from 'ol/style';
+
 
 
 const useStyles = makeStyles({
@@ -65,6 +67,14 @@ const Dialog = ({ showDialog, onClose, task }) => {
 
   const center = [-118.2437, 34.0522];
   const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false })
+
+  const customLayerStyle = new Style({
+    image: new Icon({
+      anchor: [0.5, 1],
+      scale: 0.04,
+      src: "https://www.svgrepo.com/show/3322/duck.svg"
+    })
+  });
 
 
   return (
@@ -120,7 +130,8 @@ const Dialog = ({ showDialog, onClose, task }) => {
 
           <BaseMap className={classes.map} center={center} zoom={14}>
             <UserLocationLayer
-              value={formik.values.location}
+              style={customLayerStyle}
+              value={formik.values.location.features[0].geometry.coordinates}
               onLocationSelect={handleFieldChange('location')}
               onBlur={handleValidation('location')}
             />

@@ -44,12 +44,28 @@ export const deleteTask = async (_id) => {
   }
 };
 
-export const filteredTask = async (name) => {
+export const filteredTask = async ({ name, completed }) => {
   try {
-    const { data } = await customAxios.get(`/tasks/filter?name=${encodeURIComponent(name)}`);
+    const params = new URLSearchParams();
+
+    if (name) params.append('name', name);
+    if (completed) params.append('completed', completed);
+
+    const queryString = params.toString();
+    const { data } = await customAxios.get(`/tasks/filter?${queryString}`);
     return data;
 
   } catch {
     return [];
+  }
+};
+
+export const getSubjectOption = async () => {
+  try {
+    const { data } = await customAxios.get(`/tasks/taskSubject`);
+    return data;
+
+  } catch {
+    return { success: false, message: error.response?.data?.message || "Failed to get the subject" }
   }
 }

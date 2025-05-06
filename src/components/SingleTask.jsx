@@ -36,8 +36,11 @@ const SingleTask = ({ task }) => {
     const [selectedTask, setSelectedTask] = useState(null);
     const [showDialog, setShowDialog] = useState(false);
 
-    const closePopup = () => {
+    const closeDetailsPopup = () => {
         setShowDetailsPopUp(false);
+    };
+
+    const closeDialogPopup = () => {
         setShowDialog(false);
     };
 
@@ -74,8 +77,8 @@ const SingleTask = ({ task }) => {
                 </ListItemButton>
             </ListItem>
 
-            {showDetailsPopUp && <TaskDetails task={selectedTask} onClose={closePopup} />}
-            {showDialog && <Dialog showDialog={showDialog} task={selectedTask} onClose={closePopup} />}
+            {showDetailsPopUp && <TaskDetails task={selectedTask} onClose={closeDetailsPopup} />}
+            {showDialog && <Dialog showDialog={showDialog} task={selectedTask} onClose={closeDialogPopup} />}
         </Box>
     );
 }

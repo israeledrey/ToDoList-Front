@@ -1,7 +1,45 @@
 import * as yup from 'yup';
 
-export const taskSchema = yup.object().shape({
+const geoJsonSchema = yup.object({
+  type: yup
+    .string()
+    .oneOf(["FeatureCollection"], "Location must be a FeatureCollection")
+    .required("GeoJSON type is required"),
 
+  features: yup
+    .array()
+    .of(
+      yup.object({
+        type: yup
+          .string()
+          .oneOf(["Feature"], "Each feature must be of type Feature")
+          .required("Feature type is required"),
+
+        geometry: yup
+          .object({
+            type: yup
+              .string()
+              .oneOf(["Point"], "Geometry must be of type Point")
+              .required("Geometry type is required"),
+
+            coordinates: yup
+              .array()
+              .of(yup.number().typeError("Coordinates must be numbers"))
+              .length(2, "Coordinates must contain exactly [longitude, latitude]")
+              .required("Coordinates are required"),
+          })
+          .required("Geometry is required"),
+
+        properties: yup.object(), 
+      })
+    )
+    .min(1, "GeoJSON must contain at least one feature")
+    .required("Features array is required"),
+});
+
+
+
+export const taskSchema = yup.object().shape({
   name: yup
     .string()
     .required("Task name is required")
@@ -29,9 +67,5 @@ export const taskSchema = yup.object().shape({
 
   completed: yup.boolean().default(false),
 
-  location: yup.array()
-    .of(yup.number().typeError("Each location value must be a number"))
-    .min(2, "Location must have at least latitude and longitude")
-    .max(2, "Location should contain only latitude and longitude")
-    .required("Location is required"),
+  location: geoJsonSchema.required("Location is required"),
 });

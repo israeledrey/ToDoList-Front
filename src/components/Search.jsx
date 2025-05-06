@@ -1,6 +1,5 @@
 import { useAtom } from 'jotai';
 import { searchInputAtom } from '../atoms/tasksAtoms';
-import { useFilteredTasks } from '../hooks/useFilteredTasks';
 
 import { makeStyles } from '@mui/styles';
 import { InputBase } from '@mui/material';

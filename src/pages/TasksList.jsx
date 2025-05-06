@@ -20,6 +20,9 @@ const useStyles = makeStyles({
         color: "gray",
         textAlign: "center",
         marginTop: "150px",
+    },
+    tasksTitle: {
+        fontSize: "25px"
     }
 });
 
@@ -43,7 +46,7 @@ const TasksList = () => {
 
         return (
             <>
-                <p style={{ fontSize: "25px" }}>Tasks List:</p>
+                <p className={classes.tasksTitle}>Tasks List:</p>
                 {tasksArray.map((task) => (
                     <SingleTask key={task._id} task={task} setShowDialog={setShowDialog} />
                 ))}

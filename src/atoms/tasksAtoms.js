@@ -1,6 +1,8 @@
 import { atom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 
 
+export const currentTaskAtom = atomWithStorage('current-task', null); 
 
 export const isEditingAtom = atom(false);
 

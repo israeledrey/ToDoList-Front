@@ -4,6 +4,7 @@ import BaseMap from '../components/map/BaseMap';
 import TasksLayer from '../components/map/TasksLayer';
 
 import { makeStyles } from "@mui/styles";
+import { Icon, Style } from 'ol/style';
 
 
 
@@ -38,6 +39,15 @@ const TasksMap = () => {
   const tasksArray = Object.values(tasks);
   const center = [-118.2437, 34.0522];
 
+  const customLayerStyle = new Style({
+    image: new Icon({
+      anchor: [0.5, 1],
+      scale: 0.04,
+      src: "https://www.svgrepo.com/show/3322/duck.svg"
+    })
+  });
+
+
   if (isLoading) return <p className={classes.noTasks}>Loading tasks...</p>;
   if (isError) return <p className={classes.noTasks}>Error fetching tasks.</p>;
 
@@ -45,7 +55,7 @@ const TasksMap = () => {
   return (
     <div className={classes.mapContainer}>
       <BaseMap className={classes.BaseMap} center={center} zoom={12}>
-        <TasksLayer tasks={tasksArray} />
+        <TasksLayer tasks={tasksArray} style={customLayerStyle} />
       </BaseMap>
     </div>
 

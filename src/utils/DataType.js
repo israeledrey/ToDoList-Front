@@ -1,31 +1,34 @@
-const DataType = (location) => {
-    
-    if (!location || !Array.isArray(location)) return null;
-  
-    // Point: [lon, lat]
-    if (typeof location[0] === 'number' && typeof location[1] === 'number') {
-      return 'point';
-    }
-  
-    // LineString: [[lon, lat], [lon, lat], ...]
-    if (
-      Array.isArray(location[0]) &&
-      typeof location[0][0] === 'number' &&
-      typeof location[0][1] === 'number'
-    ) {
-      return 'lineString';
-    }
-  
-    // Polygon: [[[lon, lat], [lon, lat], ...]]
-    if (
-      Array.isArray(location[0]) &&
-      Array.isArray(location[0][0]) &&
-      typeof location[0][0][0] === 'number'
-    ) {
-      return 'polygon';
-    }
-  
-    return null;
-  }
+const geoJSON = () => {
 
-  export default DataType;
+  const createGeoJSON = (coordinate) => {
+    return {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: coordinate
+          },
+          properties: {}
+        }
+      ]
+    };
+  };
+
+  const getGeoJsonType = (data) => {
+    if (
+      data?.type === "FeatureCollection" &&
+      Array.isArray(data.features) &&
+      data.features.length > 0 &&
+      data.features[0]?.geometry?.type
+    ) {
+      return data.features[0].geometry.type.toLowerCase();
+    }
+    return null;
+  };
+
+  return { createGeoJSON, getGeoJsonType };
+};
+
+export default geoJSON;
