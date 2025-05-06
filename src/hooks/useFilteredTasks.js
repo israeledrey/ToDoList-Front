@@ -12,7 +12,7 @@ export const useFilteredTasks = (tasks = {}) => {
 
     const { data = [], isLoading } = useQuery({
         queryKey: ['filteredTasks', debouncedValue],
-        queryFn: () => filteredTask({ name: debouncedValue }),
+        queryFn: () => filteredTask({ name: debouncedValue, completed: debouncedValue }),
         enabled: !isSearchEmpty, 
     });
 

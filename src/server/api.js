@@ -1,4 +1,5 @@
 import customAxios from "./customAxios";
+import { buildQueryParams } from "../utils/BuildQueryParams";
 
 
 export const getAllTasks = async () => {
@@ -44,21 +45,16 @@ export const deleteTask = async (_id) => {
   }
 };
 
-export const filteredTask = async ({ name, completed }) => {
+export const filteredTask = async (filterParams) => {
   try {
-    const params = new URLSearchParams();
-
-    if (name) params.append('name', name);
-    if (completed) params.append('completed', completed);
-
-    const queryString = params.toString();
+    const queryString = buildQueryParams(filterParams);
     const { data } = await customAxios.get(`/tasks/filter?${queryString}`);
     return data;
-
   } catch {
     return [];
   }
 };
+
 
 export const getSubjectOption = async () => {
   try {
