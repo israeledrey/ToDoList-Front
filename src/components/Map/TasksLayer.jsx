@@ -13,7 +13,7 @@ import Point from 'ol/geom/Point';
 const TasksLayer = ({ tasks, style }) => {
 
   const [mapInstance] = useAtom(mapInstanceAtom);
-  const { createGeoJSON, getGeoJsonType } = geoJSON();
+  const { getGeoJsonType } = geoJSON();
 
   useEffect(() => {
     if (!mapInstance || !tasks) return;

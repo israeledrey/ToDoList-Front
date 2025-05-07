@@ -1,10 +1,11 @@
-import { useFormik } from 'formik';
+import { useEffect } from 'react';
 import { useAtom } from 'jotai';
+import { useFormik } from 'formik';
+
 import { currentTaskAtom, isEditingAtom, snackbarAtom } from '../atoms/tasksAtoms';
 import { useTaskActions } from './useTaskActions';
 import { taskSchema } from '../validation/TaskSchema';
 import geoJSON from '../utils/DataType';
-import { useEffect } from 'react';
 
 
 export const useTaskForm = (task, onClose) => {
@@ -56,7 +57,7 @@ export const useTaskForm = (task, onClose) => {
       dayToComplete: "",
       priority: `${20}%`,
       completed: false,
-      location: initialGeoJSON
+      location: initialGeoJSON,
     },
 
     enableReinitialize: true,
