@@ -1,0 +1,115 @@
+import { useEffect } from 'react';
+import { useAtom } from 'jotai';
+import { useFormik } from 'formik';
+
+import { currentTaskAtom, isEditingAtom, snackbarAtom } from '../atoms/tasksAtoms';
+import { useTaskActions } from './useTaskActions';
+import { taskSchema } from '../validation/TaskSchema';
+import geoJSON from '../utils/DataType';
+
+
+export const useTaskForm = (task, onClose) => {
+
+  const [isEditing] = useAtom(isEditingAtom);
+  const [, setCurrentTask] = useAtom(currentTaskAtom);
+  const { handleAddTask, handleEditTask } = useTaskActions();
+  const [snackbar, setSnackbar] = useAtom(snackbarAtom);
+  const { createGeoJSON } = geoJSON();
+
+
+  const handleFieldChange = (field) => (value) => {
+
+    if (field === 'completed') {
+      return formik.setFieldValue(field, value.target.checked);
+    }
+    if (field === 'priority') {
+      return formik.setFieldValue(field, `${value}%`);
+    }
+    if (field === 'location') {
+      const geoJson = createGeoJSON(value);
+      return formik.setFieldValue('location', geoJson);
+    }
+    formik.setFieldValue(field, value.target ? value.target.value : value);
+  };
+
+
+  const handleValidation = (field) => async () => {
+
+    formik.setFieldTouched(field, true, true);
+    try {
+      await taskSchema.validateAt(field, formik.values);
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: error.message,
+        severity: "error",
+      });
+    }
+  };
+
+  const initialGeoJSON = createGeoJSON([null, null]);
+
+  const formik = useFormik({
+
+    initialValues: {
+      name: "",
+      subject: "",
+      dayToComplete: "",
+      priority: `${20}%`,
+      completed: false,
+      location: initialGeoJSON,
+    },
+
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      try {
+        await taskSchema.validate(values, { abortEarly: false });
+
+        let result;
+        if (isEditing) {
+          result = await handleEditTask(values);
+          setCurrentTask(values);
+          onClose();
+        } else {
+          result = await handleAddTask(values);
+          setCurrentTask(values);
+          onClose();
+        }
+
+        setSnackbar({
+          open: false,
+          message: result.message,
+          severity: result.success ? "success" : "error",
+        });
+
+        if (result.success) {
+          initialValues(values);
+          onClose();
+        }
+
+      } catch (error) {
+        if (error.name === "ValidationError") {
+          setSnackbar({
+            open: true,
+            message: error.errors[0],
+            severity: "error",
+          });
+        } else {
+          setSnackbar({
+            open: true,
+            message: error.message || "Something went wrong.",
+            severity: "error"
+          });
+        }
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (isEditing && task) {
+      formik.setValues(task);
+    }
+  }, [task, isEditing]);
+
+  return { formik, handleFieldChange, handleValidation, snackbar, setSnackbar };
+};
